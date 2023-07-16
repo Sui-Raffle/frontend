@@ -5,7 +5,7 @@ import SettleRaffle from '@/components/SettleRaffle';
 
 export function RaffleManager() {
   return (
-    <div className='mx-auto max-w-full border border-gray-200 bg-white p-6 shadow dark:border-gray-700 dark:bg-gray-800'>
+    <div className='mx-auto max-w-full bg-gray-800 p-6 shadow'>
       <CreateRaffle></CreateRaffle>
       {/* <SettleRaffle></SettleRaffle> */}
     </div>

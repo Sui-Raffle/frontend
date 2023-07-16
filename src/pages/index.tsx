@@ -7,6 +7,8 @@ import Seo from '@/components/Seo';
 import Navbar from '../components/Navbar';
 import { RaffleManager } from '../components/RaffleManager';
 import { PreviousRaffles } from '../components/PreviousRaffles';
+import Script from 'next/script';
+import 'flowbite';
 /**
  * SVGR Support
  * Caveat: No React Props Type.
@@ -25,7 +27,6 @@ export default function HomePage() {
       <Layout>
         {/* <Seo templateTitle='Home' /> */}
         <Seo />
-
         <main>
           <Navbar></Navbar>
           <section>
