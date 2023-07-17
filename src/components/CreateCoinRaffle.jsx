@@ -1,87 +1,18 @@
 import React, { useState } from 'react';
 import { useWalletKit } from '@mysten/wallet-kit';
-import { TransactionBlock } from '@mysten/sui.js';
 import getSuiProvider from '../lib/getSuiProvider';
-
-let createRaffle = async ({
-  walletKit,
-  addresses,
-  raffleName,
-  winnerCount,
-  prizeBalance,
-  coin_type,
-}) => {
-  if (walletKit.currentAccount) {
-    let drand = await fetch(
-      `https://drand.cloudflare.com/8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce/public/latest`
-    ).then((response) => response.json());
-    let round = drand.round + 2;
-    const tx = new TransactionBlock();
-    let coinInput = undefined;
-    if (coin_type === '0x2::sui::SUI') {
-      coinInput = tx.splitCoins(tx.gas, [
-        tx.pure(prizeBalance * 10 ** 9, 'u64'),
-      ]);
-    } else {
-      // const [mainCoin, ...otherCoins] = coins
-      //   .filter((coin) => coin.coinType === coin_type)
-      //   .map((coin) =>
-      //     tx.objectRef({
-      //       objectId: coin.coinObjectId,
-      //       digest: coin.digest,
-      //       version: coin.version,
-      //     })
-      //   );
-      // if (mainCoin) {
-      //   if (otherCoins.length > 0) {
-      //     tx.mergeCoins(mainCoin, otherCoins);
-      //     coinInput = tx.splitCoins(mainCoin, [
-      //       tx.pure(
-      //         collateralAmount *
-      //           10 ** (ASSET_DECIAMLS[coinSymbol as ACCEPT_ASSETS] ?? 9),
-      //         "u64"
-      //       ),
-      //     ]);
-      //   } else {
-      //     coinInput = tx.splitCoins(mainCoin, [
-      //       tx.pure(
-      //         collateralAmount *
-      //           10 ** (ASSET_DECIAMLS[coinSymbol as ACCEPT_ASSETS] ?? 9),
-      //         "u64"
-      //       ),
-      //     ]);
-      //   }
-    }
-    console.log('coinInput:', coinInput);
-
-    tx.moveCall({
-      target:
-        '0xc5c1c1d7c860399cf7e46c6513e13bca5c7935f382862c2e886fd280a4032012::raffle::create_raffle',
-      typeArguments: [coin_type],
-      arguments: [
-        tx.pure(Array.from(new TextEncoder().encode(raffleName)), 'vector<u8>'),
-        tx.pure(round, 'u64'),
-        tx.pure(addresses, 'vector<address>'),
-        tx.pure(parseInt(winnerCount), 'u64'),
-        coinInput,
-      ],
-    });
-
-    const resData = await walletKit.signAndExecuteTransactionBlock({
-      transactionBlock: tx,
-    });
-    console.log('resData', resData);
-
-    return resData;
-  }
-};
+import { createCoinRaffle } from '../lib/createCoinRaffle';
+import { settleCoinRaffle } from '../lib/settleCoinRaffle';
+import { getRaffleFields } from '../lib/getRaffleFields';
+import { decimals } from '../lib/config';
 export default function CreateCoinRaffle() {
   let walletKit = useWalletKit();
 
   const [startRaffleDigest, setStartRaffleDigest] = useState(
-    '13MMYqAJnoUgtdF2uo29YyS95WpgZAN9rDUGLAD7F9ZS'
+    'AS1aa2xRwb93M29dUgnuqYzpoQS6q2yyuxpSAbqZ97Kr'
   );
   const [currentRaffleObjId, setCurrentRaffleObjId] = useState('');
+  const [currentRaffleFields, setCurrentRaffleFields] = useState({});
 
   if (
     !currentRaffleObjId &&
@@ -103,6 +34,16 @@ export default function CreateCoinRaffle() {
         return obj.type == 'created';
       })[0].objectId;
       setCurrentRaffleObjId(raffleObjId);
+      let raffleFields = await getRaffleFields({ walletKit, raffleObjId });
+      setCurrentRaffleFields(raffleFields);
+      console.log('raffleFields:', raffleFields);
+      console.log('raffleFields.type:', raffleFields.type);
+      setRaffleName(raffleFields.name);
+      setWinnerCount(raffleFields.winner_count);
+      setPrizeBalance(raffleFields.balance);
+      setAddresses(
+        raffleFields.participants.join('\n') + raffleFields.winners.join('\n')
+      );
     };
     run();
   }
@@ -114,7 +55,9 @@ export default function CreateCoinRaffle() {
   };
   // prizeBlance Handeler
   let prizeBalanceDefault = 0;
-  const [prizeBalance, setPrizeBalance] = useState(prizeBalanceDefault);
+  const [prizeBalance, setPrizeBalance] = useState(
+    currentRaffleFields.balance || prizeBalanceDefault
+  );
   const handlePrizeBalanceChange = (event) => {
     setPrizeBalance(event.target.value);
   };
@@ -132,7 +75,7 @@ export default function CreateCoinRaffle() {
     setAddresses(event.target.value);
   };
   const handleSettleRaffle = async (event) => {
-    '';
+    settleCoinRaffle({ walletKit, raffleObjId: currentRaffleObjId });
   };
   const handleStartRaffle = async (event) => {
     let _winnerCount = Number(winnerCount) || 1;
@@ -143,7 +86,7 @@ export default function CreateCoinRaffle() {
     console.log('prizeBalance:', _prizeBalance);
     console.log('winnerCount:', _winnerCount);
     let coin_type = '0x2::sui::SUI';
-    let resData = await createRaffle({
+    let resData = await createCoinRaffle({
       walletKit,
       addresses: _addresses,
       raffleName,
