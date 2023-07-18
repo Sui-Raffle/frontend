@@ -3,14 +3,24 @@ import { getNetwork } from './getNetwork';
 import { RafflePackageId } from './config';
 import { hexToUint8Array } from './hexToUint8Array';
 import { getRaffleFields } from './getRaffleFields';
-
+import { sleep } from './sleep';
 export let settleCoinRaffle = async ({ walletKit, raffleObjId }) => {
   let raffleFields = await getRaffleFields({ walletKit, raffleObjId });
-  console.log('raffleObj:', raffleFields);
 
-  let drand = await fetch(
+  console.log(
     `https://drand.cloudflare.com/8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce/public/${raffleFields.round}`
-  ).then((response) => response.json());
+  );
+  let drand;
+  try {
+    drand = await fetch(
+      `https://drand.cloudflare.com/8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce/public/${raffleFields.round}`
+    ).then((response) => response.json());
+  } catch (e) {
+    console.log(e);
+    // await sleep(15000);
+
+    return false;
+  }
 
   if (walletKit.currentAccount) {
     const tx = new TransactionBlock();
