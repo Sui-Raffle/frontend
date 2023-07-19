@@ -4,7 +4,8 @@ import getSuiProvider from '../lib/getSuiProvider';
 import { moveCallCreateCoinRaffle } from '../lib/moveCallCreateCoinRaffle';
 import { moveCallSettleCoinRaffle } from '../lib/moveCallSettleCoinRaffle';
 import { getRaffleFields } from '../lib/getRaffleFields';
-import { decimals } from '../lib/config';
+import { CoinMetadatas } from '../lib/config';
+import { updateCoinMetadatas } from '@/lib/updateCoinMetadatas';
 import RingAnimation from './RingAnimation';
 import { sleep } from '../lib/sleep.jsx';
 
@@ -15,6 +16,54 @@ export default function CreateCoinRaffle() {
   const [currentRaffleObjId, setCurrentRaffleObjId] = useState('');
   const [currentRaffleFields, setCurrentRaffleFields] = useState({});
   const [txRunning, setTxRunning] = useState(false);
+  const [userCoinsList, setUserCoinsList] = useState([]);
+  const [gettedUserCoinsList, setGettedUserCoinsList] = useState(false);
+  const [coinMetadataReady, setCoinMetadataReady] = useState(false);
+  const [currentCoinInfo, setCurrentCoinInfo] = useState({
+    iconUrl: null,
+    coinType: '0x2::sui::SUI',
+    name: 'Sui',
+    symbol: 'SUI',
+  });
+
+  // TODO: ray:
+  if (!gettedUserCoinsList && walletKit && walletKit.currentAccount) {
+    let run = async () => {
+      setGettedUserCoinsList(true);
+      window.walletKit = walletKit;
+
+      let network = walletKit.currentAccount.chains[0].split('sui:')[1];
+      let provider = getSuiProvider(network);
+      let userCoins = [];
+      let nextCursor = '';
+      let res;
+      do {
+        res = await provider.getAllCoins({
+          owner: walletKit.currentAccount.address,
+          nextCursor,
+        });
+        userCoins = userCoins.concat(res.data);
+        nextCursor = res.nextCursor;
+      } while (res.hasNextPage);
+      let coinSum = {};
+      userCoins.forEach((coin) => {
+        if (coinSum[coin.coinType]) {
+          coinSum[coin.coinType].balance += Number(coin.balance);
+        } else {
+          coinSum[coin.coinType] = {
+            type: coin.coinType,
+            balance: Number(coin.balance),
+          };
+        }
+      });
+      setUserCoinsList(Array.from(Object.values(coinSum)));
+      await updateCoinMetadatas(Array.from(Object.keys(coinSum)), walletKit);
+      setCoinMetadataReady(true);
+
+      // todo: may have next cursor
+    };
+    run();
+  }
 
   // TODO: ray: 需要 getRaffleFields 只發生一次就夠了，但要等 walletKit Ready，且 currentRaffleObjId 有值，且 currentRaffleFields 為空
   const [gettingRaffleFieldsById, setGettingRaffleFieldsById] = useState(false);
@@ -36,8 +85,10 @@ export default function CreateCoinRaffle() {
       console.log('raffleFields:', raffleFields);
       setRaffleName(raffleFields.name);
       setWinnerCount(raffleFields.winner_count);
+      await updateCoinMetadatas([raffleFields.coin_type], walletKit);
       setPrizeBalance(
-        raffleFields.balance / 10 ** decimals[raffleFields.coin_type]
+        raffleFields.balance /
+          10 ** CoinMetadatas[raffleFields.coin_type].decimals
       ); //
       setAddresses(
         raffleFields.participants.join('\n') + raffleFields.winners.join('\n')
@@ -126,7 +177,7 @@ export default function CreateCoinRaffle() {
     let _winnerCount = Number(winnerCount) || 1;
     let _prizeBalance = prizeBalance || prizeBalanceDefault;
     let _addresses = addresses.split('\n');
-    let coin_type = '0x2::sui::SUI';
+    let coin_type = currentCoinInfo.coinType;
     setTxRunning(true);
     console.log({
       walletKit,
@@ -136,6 +187,7 @@ export default function CreateCoinRaffle() {
       prizeBalance,
       coin_type,
     });
+
     let resData = await moveCallCreateCoinRaffle({
       walletKit,
       addresses: _addresses,
@@ -179,10 +231,10 @@ export default function CreateCoinRaffle() {
             />
           </div>
           <div className='border-gray-light2 bg-white text-black relative my-2 flex items-center rounded-lg border px-2 py-1'>
-            <label className='w-full '>Prize</label>
+            <label className='w-48'>Prize Amount</label>
             <input
               type='number'
-              className='placeholder-gray-light2 block w-full rounded-lg border-transparent bg-transparent p-2 pr-32 text-sm focus:outline-none lg:text-lg'
+              className='placeholder-gray-light2 block w-full rounded-lg border-transparent bg-transparent p-2 pr-32 text-sm focus:outline-none lg:text-lg mx-3'
               placeholder='0'
               onChange={handlePrizeBalanceChange}
               value={prizeBalance}
@@ -196,13 +248,20 @@ export default function CreateCoinRaffle() {
             Max
           </button> */}
               <button
-                id='dropdownDefaultButton'
-                data-dropdown-toggle='dropdown'
+                id='coinSelectDropdownButton'
+                data-dropdown-toggle='coinSelectDropdown'
                 className='inline-flex items-center px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
                 type='button'
                 disabled={currentRaffleObjId}
               >
-                Sui
+                {CoinMetadatas[currentCoinInfo.coinType] &&
+                  CoinMetadatas[currentCoinInfo.coinType].iconUrl && (
+                    <img
+                      className='inline-block h-6 w-6 mx-1'
+                      src={CoinMetadatas[currentCoinInfo.coinType].iconUrl}
+                    />
+                  )}
+                {currentCoinInfo.name || currentCoinInfo.symbol}
                 <svg
                   className='ml-2.5 h-2.5 w-2.5'
                   aria-hidden='true'
@@ -220,13 +279,56 @@ export default function CreateCoinRaffle() {
                 </svg>
               </button>
               <div
-                id='dropdown'
-                className='z-10 hidden w-32 divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700'
+                id='coinSelectDropdown'
+                className='z-10 hidden w-64 divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700'
               >
                 <ul
                   className='py-2 text-sm text-gray-700 dark:text-gray-200'
-                  aria-labelledby='dropdownDefaultButton'
+                  aria-labelledby='coinSelectDropdownButton'
                 >
+                  {userCoinsList.map((coin, index) => {
+                    if (coinMetadataReady && CoinMetadatas[coin.type]) {
+                      let icon = () => {
+                        if (CoinMetadatas[coin.type].iconUrl) {
+                          return (
+                            <img
+                              className='inline-block h-6 w-6 mx-1'
+                              src={CoinMetadatas[coin.type].iconUrl}
+                            />
+                          );
+                        } else {
+                          return <></>;
+                        }
+                      };
+                      let handleOnClick = () => {
+                        setCurrentCoinInfo({
+                          coinType: coin.type,
+                          ...CoinMetadatas[coin.type],
+                        });
+                        let a = document
+                          .getElementById('coinSelectDropdownButton')
+                          .click();
+                      };
+                      return (
+                        <li key={index}>
+                          <button
+                            className='block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
+                            onClick={handleOnClick}
+                          >
+                            {icon()}
+                            {(
+                              coin.balance /
+                              10 ** CoinMetadatas[coin.type].decimals
+                            ).toFixed(2)}{' '}
+                            {CoinMetadatas[coin.type].name ||
+                              CoinMetadatas[coin.type].symbol}{' '}
+                          </button>
+                        </li>
+                      );
+                    } else {
+                      return <></>;
+                    }
+                  })}
                   <li>
                     <button className='block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'>
                       Type A

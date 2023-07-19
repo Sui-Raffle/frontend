@@ -4,10 +4,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 let getSuiProvider = (network = 'mainnet') => {
-  console.log(process.env.SUI_TESTNET_RPC);
   if (network == 'mainnet') {
     let connection = new Connection({
-      fullnode: 'https://fullnode.mainnet.sui.io:443',
+      fullnode:
+        'https://sui-mainnet.blockvision.org/v1/2SjMglFHZy5G6RUaIEm4aLLtHGP',
     });
     return new JsonRpcProvider(connection);
   } else if (network == 'testnet') {

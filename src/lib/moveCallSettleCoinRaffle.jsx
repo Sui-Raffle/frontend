@@ -6,6 +6,7 @@ import { getRaffleFields } from './getRaffleFields';
 import { sleep } from './sleep';
 export let moveCallSettleCoinRaffle = async ({ walletKit, raffleObjId }) => {
   let raffleFields = await getRaffleFields({ walletKit, raffleObjId });
+  console.log('raffleFields:', raffleFields);
 
   console.log(
     `https://drand.cloudflare.com/8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce/public/${raffleFields.round}`
@@ -25,7 +26,7 @@ export let moveCallSettleCoinRaffle = async ({ walletKit, raffleObjId }) => {
     let network = getNetwork(walletKit);
     tx.moveCall({
       target: `${RafflePackageId[network]}::raffle::settle_coin_raffle`,
-      typeArguments: ['0x2::sui::SUI'],
+      typeArguments: [raffleFields.coin_type],
       arguments: [
         tx.object(raffleObjId),
         tx.pure(hexToUint8Array(drand.signature), 'vector<u8>'),

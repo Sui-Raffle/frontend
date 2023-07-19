@@ -1,7 +1,9 @@
 import { TransactionBlock } from '@mysten/sui.js';
 import { getNetwork } from './getNetwork';
 import { RafflePackageId } from './config';
-
+import getSuiProvider from '../lib/getSuiProvider';
+import { CoinMetadatas } from '../lib/config';
+import { updateCoinMetadatas } from '@/lib/updateCoinMetadatas';
 export let moveCallCreateCoinRaffle = async ({
   walletKit,
   addresses,
@@ -11,6 +13,8 @@ export let moveCallCreateCoinRaffle = async ({
   coin_type,
 }) => {
   if (walletKit.currentAccount) {
+    let network = getNetwork(walletKit);
+    let provider = getSuiProvider(network);
     let drand = await fetch(
       `https://drand.cloudflare.com/8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce/public/latest`
     ).then((response) => response.json());
@@ -22,37 +26,49 @@ export let moveCallCreateCoinRaffle = async ({
         tx.pure(prizeBalance * 10 ** 9, 'u64'),
       ]);
     } else {
-      // const [mainCoin, ...otherCoins] = coins
-      //   .filter((coin) => coin.coinType === coin_type)
-      //   .map((coin) =>
-      //     tx.objectRef({
-      //       objectId: coin.coinObjectId,
-      //       digest: coin.digest,
-      //       version: coin.version,
-      //     })
-      //   );
-      // if (mainCoin) {
-      //   if (otherCoins.length > 0) {
-      //     tx.mergeCoins(mainCoin, otherCoins);
-      //     coinInput = tx.splitCoins(mainCoin, [
-      //       tx.pure(
-      //         collateralAmount *
-      //           10 ** (ASSET_DECIAMLS[coinSymbol as ACCEPT_ASSETS] ?? 9),
-      //         "u64"
-      //       ),
-      //     ]);
-      //   } else {
-      //     coinInput = tx.splitCoins(mainCoin, [
-      //       tx.pure(
-      //         collateralAmount *
-      //           10 ** (ASSET_DECIAMLS[coinSymbol as ACCEPT_ASSETS] ?? 9),
-      //         "u64"
-      //       ),
-      //     ]);
-      //   }
+      await updateCoinMetadatas([coin_type], walletKit);
+
+      let userCoins = [];
+      let nextCursor = '';
+      let res;
+      do {
+        res = await provider.getAllCoins({
+          owner: walletKit.currentAccount.address,
+          coinType: coin_type,
+          nextCursor,
+        });
+        userCoins = userCoins.concat(res.data);
+        nextCursor = res.nextCursor;
+      } while (res.hasNextPage);
+      const [mainCoin, ...otherCoins] = userCoins
+        .filter((coin) => coin.coinType === coin_type)
+        .map((coin) =>
+          tx.objectRef({
+            objectId: coin.coinObjectId,
+            digest: coin.digest,
+            version: coin.version,
+          })
+        );
+      if (mainCoin) {
+        if (otherCoins.length > 0) {
+          tx.mergeCoins(mainCoin, otherCoins);
+          coinInput = tx.splitCoins(mainCoin, [
+            tx.pure(
+              prizeBalance * 10 ** (CoinMetadatas[coin_type].decimals ?? 9),
+              'u64'
+            ),
+          ]);
+        } else {
+          coinInput = tx.splitCoins(mainCoin, [
+            tx.pure(
+              prizeBalance * 10 ** (CoinMetadatas[coin_type].decimals ?? 9),
+              'u64'
+            ),
+          ]);
+        }
+      }
     }
 
-    let network = getNetwork(walletKit);
     tx.moveCall({
       target: `${RafflePackageId[network]}::raffle::create_raffle`,
       typeArguments: [coin_type],

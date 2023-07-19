@@ -2,9 +2,10 @@ import * as React from 'react';
 
 import { useWalletKit } from '@mysten/wallet-kit';
 import getSuiProvider from '../lib/getSuiProvider';
-import { decimals, CoinMetadatas } from '../lib/config';
+import { CoinMetadatas } from '../lib/config';
 import { moveCallSettleCoinRaffle } from '../lib/moveCallSettleCoinRaffle';
 import { RafflePackageId } from '../lib/config';
+import { updateCoinMetadatas } from '../lib/updateCoinMetadatas';
 export function PreviousCoinRaffles() {
   const walletKit: any = useWalletKit();
   const [raffles, setRaffles] = React.useState([]);
@@ -198,20 +199,6 @@ export function PreviousCoinRaffles() {
     );
   }
   return <div>Loading</div>;
-}
-async function updateCoinMetadatas(coinTypes: never[], walletKit: any) {
-  let network = walletKit.currentAccount.chains[0].split('sui:')[1];
-  let provider = getSuiProvider(network);
-  let coinTypeSet = Array.from(new Set(coinTypes));
-  for (let coinType of coinTypeSet) {
-    if (CoinMetadatas[coinType]) {
-      continue;
-    }
-    let coinMetadata: any = await provider?.getCoinMetadata({
-      coinType,
-    });
-    CoinMetadatas[coinType] = coinMetadata;
-  }
 }
 function parseTimestamp(timestamp: number) {
   const date = new Date(timestamp);
