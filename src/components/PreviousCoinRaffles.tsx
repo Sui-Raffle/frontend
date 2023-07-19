@@ -6,11 +6,14 @@ import { CoinMetadatas } from '../lib/config';
 import { moveCallSettleCoinRaffle } from '../lib/moveCallSettleCoinRaffle';
 import { RafflePackageId } from '../lib/config';
 import { updateCoinMetadatas } from '../lib/updateCoinMetadatas';
+import Button from '@/components/buttons/Button';
+import { ImSpinner2 } from 'react-icons/im';
 export function PreviousCoinRaffles() {
   const walletKit: any = useWalletKit();
   const [raffles, setRaffles] = React.useState([]);
   const [raffleFetched, setRaffleFetched] = React.useState(false);
   const [coinMetadatasReady, setCoinMetadatasReady] = React.useState(false);
+  const [actionPending, setActionPending] = React.useState(Object());
 
   // TODO: ray: 需要queryEvents 只發生一次就夠了，但要等 walletKit Ready
   // 另外，使用者應該可以手動觸發重整，因為可以透過 RaffleEventsNextCursor 找到更之前的資料，但這等 Event 夠多再來寫
@@ -107,6 +110,7 @@ export function PreviousCoinRaffles() {
           <tbody>
             {raffles.map((raffle: any, index) => {
               let coinMetadata = CoinMetadatas[getRaffleCoinType(raffle.type)];
+              let settleRaffleButtonId = `settle-raffle-${index}-${raffle.id.id}`;
               let prizeField = () => {
                 if (coinMetadatasReady) {
                   return (
@@ -120,6 +124,10 @@ export function PreviousCoinRaffles() {
                 }
               };
               let handleSettleRaffle = async () => {
+                actionPending[settleRaffleButtonId] = true;
+                setActionPending({
+                  ...actionPending,
+                });
                 let result = await moveCallSettleCoinRaffle({
                   raffleObjId: raffle.id.id,
                   walletKit,
@@ -128,6 +136,10 @@ export function PreviousCoinRaffles() {
                   raffle.status = 1;
                   setRaffles([...raffles]);
                 }
+                actionPending[settleRaffleButtonId] = undefined;
+                setActionPending({
+                  ...actionPending,
+                });
               };
               let handleViewRaffle = () => {
                 let network =
@@ -138,25 +150,36 @@ export function PreviousCoinRaffles() {
                 );
               };
               let raffleActions = () => {
+                console.log('actionPending', actionPending);
                 if (raffle.status == 0) {
                   // In Progress
                   return (
-                    <button
-                      className='bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
+                    <Button
+                      className='bg-green-500 hover:bg-green-700 rounded-lg text-white'
                       onClick={handleSettleRaffle}
+                      id={settleRaffleButtonId}
+                      disabled={actionPending[settleRaffleButtonId]}
+                      style={
+                        actionPending[settleRaffleButtonId]
+                          ? { cursor: 'wait' }
+                          : {}
+                      }
                     >
+                      {actionPending[settleRaffleButtonId] && (
+                        <ImSpinner2 className='animate-spin mr-2'></ImSpinner2>
+                      )}
                       Settle Raffle
-                    </button>
+                    </Button>
                   );
                 } else if (raffle.status == 1) {
                   // Settled
                   return (
-                    <button
-                      className='bg-blue-500 hover:bg-blue-700 rounded-lg px-4 py-1 text-white'
+                    <Button
+                      className='bg-blue-500 hover:bg-blue-700 rounded-lg text-white'
                       onClick={handleViewRaffle}
                     >
                       View Raffle
-                    </button>
+                    </Button>
                   );
                 }
               };
