@@ -4,7 +4,7 @@ import { RafflePackageId } from './config';
 import { hexToUint8Array } from './hexToUint8Array';
 import { getRaffleFields } from './getRaffleFields';
 import { sleep } from './sleep';
-export let settleCoinRaffle = async ({ walletKit, raffleObjId }) => {
+export let moveCallSettleCoinRaffle = async ({ walletKit, raffleObjId }) => {
   let raffleFields = await getRaffleFields({ walletKit, raffleObjId });
 
   console.log(

@@ -3,7 +3,8 @@ import * as React from 'react';
 import { useWalletKit } from '@mysten/wallet-kit';
 import getSuiProvider from '../lib/getSuiProvider';
 import { decimals, CoinMetadatas } from '../lib/config';
-import { settleCoinRaffle } from '../lib/settleCoinRaffle';
+import { moveCallSettleCoinRaffle } from '../lib/moveCallSettleCoinRaffle';
+import { RafflePackageId } from '../lib/config';
 export function PreviousCoinRaffles() {
   const walletKit: any = useWalletKit();
   const [raffles, setRaffles] = React.useState([]);
@@ -20,8 +21,7 @@ export function PreviousCoinRaffles() {
     provider
       ?.queryEvents({
         query: {
-          MoveEventType:
-            '0x595d38dba680f310c7f07dc9b3c23b74d665e9eef1a08355901127c33c224d49::raffle::CoinRaffleCreated',
+          MoveEventType: `${RafflePackageId[network]}::raffle::CoinRaffleCreated`,
         },
       })
       .then(async (events) => {
@@ -119,7 +119,7 @@ export function PreviousCoinRaffles() {
                 }
               };
               let handleSettleRaffle = async () => {
-                let result = await settleCoinRaffle({
+                let result = await moveCallSettleCoinRaffle({
                   raffleObjId: raffle.id.id,
                   walletKit,
                 });

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useWalletKit } from '@mysten/wallet-kit';
 import getSuiProvider from '../lib/getSuiProvider';
-import { createCoinRaffle } from './CreateCoinRaffle';
-import { settleCoinRaffle } from '../lib/settleCoinRaffle';
+import { moveCallCreateCoinRaffle } from '../lib/moveCallCreateCoinRaffle';
+import { moveCallSettleCoinRaffle } from '../lib/moveCallSettleCoinRaffle';
 import { getRaffleFields } from '../lib/getRaffleFields';
 import { decimals } from '../lib/config';
 import RingAnimation from './RingAnimation';
@@ -109,7 +109,7 @@ export default function CreateCoinRaffle() {
   };
   const handleSettleRaffle = async (event) => {
     setTxRunning(true);
-    let result = await settleCoinRaffle({
+    let result = await moveCallSettleCoinRaffle({
       walletKit,
       raffleObjId: currentRaffleObjId,
     });
@@ -136,7 +136,7 @@ export default function CreateCoinRaffle() {
       prizeBalance,
       coin_type,
     });
-    let resData = await createCoinRaffle({
+    let resData = await moveCallCreateCoinRaffle({
       walletKit,
       addresses: _addresses,
       raffleName,
