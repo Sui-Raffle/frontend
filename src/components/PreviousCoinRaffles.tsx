@@ -81,6 +81,9 @@ export function PreviousCoinRaffles() {
                 #
               </th>
               <th className='py-3 px-6 bg-gray-50 text-left text-xs font-medium text-gray-500  tracking-wider'>
+                Name
+              </th>
+              <th className='py-3 px-6 bg-gray-50 text-left text-xs font-medium text-gray-500  tracking-wider'>
                 Timestamp
               </th>
               <th className='py-3 px-6 bg-gray-50 text-left text-xs font-medium text-gray-500  tracking-wider'>
@@ -161,6 +164,10 @@ export function PreviousCoinRaffles() {
                   <td className='py-4 px-6 border-b border-gray-200'>
                     {index + 1}
                   </td>
+                  <td className='py-4 px-6 border-b border-gray-200'>
+                    {raffle.name}
+                  </td>
+
                   <td className='py-4 px-6 border-b border-gray-200'>
                     {parseTimestamp(Number(raffle.timestampMs))}
                   </td>
