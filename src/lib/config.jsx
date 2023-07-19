@@ -5,3 +5,4 @@ export let RafflePackageId = {
 export let decimals = {
   '0x2::sui::SUI': 9,
 };
+export let CoinMetadatas = Object();

@@ -16,6 +16,7 @@ export default function CreateCoinRaffle() {
   const [currentRaffleFields, setCurrentRaffleFields] = useState({});
   const [txRunning, setTxRunning] = useState(false);
 
+  // TODO: ray: 需要 getRaffleFields 只發生一次就夠了，但要等 walletKit Ready，且 currentRaffleObjId 有值，且 currentRaffleFields 為空
   const [gettingRaffleFieldsById, setGettingRaffleFieldsById] = useState(false);
   if (
     currentRaffleObjId &&
@@ -31,8 +32,6 @@ export default function CreateCoinRaffle() {
         walletKit,
         raffleObjId: currentRaffleObjId,
       });
-      // TODO: 總之就顯示 Raffle，如果有 Winner 則在按鈕上方，弄一個 full width 的欄位列出所有贏家，並且看能不能弄個彩票動畫。
-      // 然後 Settle Raffle 後，自動更新檢查 Winner
       setCurrentRaffleFields(raffleFields);
       console.log('raffleFields:', raffleFields);
       setRaffleName(raffleFields.name);
@@ -47,6 +46,7 @@ export default function CreateCoinRaffle() {
     };
     run();
   }
+  // TODO: ray: 需要 getTransactionBlock 只發生一次就夠了，但要等 walletKit Ready 且 startRaffleDigest 有值且 currentRaffleObjId 為空
   const [gettingRaffleIdByDigest, setGettingRaffleIdByDigest] = useState(false);
   if (
     startRaffleDigest &&
@@ -55,8 +55,8 @@ export default function CreateCoinRaffle() {
     walletKit &&
     walletKit.currentAccount
   ) {
+    setGettingRaffleIdByDigest(true);
     let run = async () => {
-      setGettingRaffleIdByDigest(true);
       try {
         let network = walletKit.currentAccount.chains[0].split('sui:')[1];
         let provider = getSuiProvider(network);
@@ -128,7 +128,14 @@ export default function CreateCoinRaffle() {
     let _addresses = addresses.split('\n');
     let coin_type = '0x2::sui::SUI';
     setTxRunning(true);
-
+    console.log({
+      walletKit,
+      addresses: _addresses,
+      raffleName,
+      winnerCount: _winnerCount,
+      prizeBalance,
+      coin_type,
+    });
     let resData = await createCoinRaffle({
       walletKit,
       addresses: _addresses,
@@ -256,7 +263,7 @@ export default function CreateCoinRaffle() {
             </div>
             <button
               className='w-full bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
-              onClick={handleSettleRaffle}
+              onClick={window.location.reload()}
             >
               Create Another Raffle
             </button>
@@ -266,7 +273,7 @@ export default function CreateCoinRaffle() {
           <button
             className='w-full bg-blue-500 hover:bg-blue-700 rounded-lg px-4 py-1 text-white'
             onClick={handleStartRaffle}
-            disabled={!winnerCount || !prizeBalance || !addresses}
+            disabled={!winnerCount || !addresses}
           >
             Start Raffle
           </button>

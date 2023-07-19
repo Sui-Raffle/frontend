@@ -17,8 +17,6 @@ export let settleCoinRaffle = async ({ walletKit, raffleObjId }) => {
     ).then((response) => response.json());
   } catch (e) {
     console.log(e);
-    // await sleep(15000);
-
     return false;
   }
 

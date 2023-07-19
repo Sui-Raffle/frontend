@@ -16,7 +16,7 @@ const Wrapper = styled.div`
   width: 64px;
   height: 64px;
 `;
-
+// TODO: ray 幫修一下這個 warning，感謝
 const RingSpinner = styled.div`
   box-sizing: border-box;
   display: block;
