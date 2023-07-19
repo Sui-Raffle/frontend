@@ -11,6 +11,7 @@ export function PreviousRaffles() {
   const [coinMetadatasReady, setCoinMetadatasReady] = React.useState(false);
 
   // TODO: ray: 需要queryEvents 只發生一次就夠了，但要等 walletKit Ready
+  // 另外，使用者應該可以手動觸發重整，因為可以透過 RaffleEventsNextCursor 找到更之前的資料，但這等 Event 夠多再來寫
   if (walletKit && walletKit.currentAccount && !raffleFetched) {
     setRaffleFetched(true);
     let network = walletKit.currentAccount.chains[0].split('sui:')[1];
@@ -24,6 +25,10 @@ export function PreviousRaffles() {
         },
       })
       .then(async (events) => {
+        if (events.hasNextPage) {
+          ('');
+          // 等有夠多再來寫比較快
+        }
         let raffeObjIds = events.data.map(
           (event: any) => event.parsedJson.raffle_id
         );
@@ -97,7 +102,6 @@ export function PreviousRaffles() {
           </thead>
           <tbody>
             {raffles.map((raffle: any, index) => {
-              console.log(raffle);
               let coinMetadata = CoinMetadatas[getRaffleCoinType(raffle.type)];
               let prizeField = () => {
                 if (coinMetadatasReady) {
@@ -130,7 +134,6 @@ export function PreviousRaffles() {
                 );
               };
               let raffleActions = () => {
-                console.log(raffle);
                 if (raffle.status == 0) {
                   // In Progress
                   return (
