@@ -4,7 +4,7 @@ import { useWalletKit } from '@mysten/wallet-kit';
 import getSuiProvider from '../lib/getSuiProvider';
 import { decimals, CoinMetadatas } from '../lib/config';
 import { settleCoinRaffle } from '../lib/settleCoinRaffle';
-export function PreviousRaffles() {
+export function PreviousCoinRaffles() {
   const walletKit: any = useWalletKit();
   const [raffles, setRaffles] = React.useState([]);
   const [raffleFetched, setRaffleFetched] = React.useState(false);

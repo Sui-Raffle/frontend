@@ -9,7 +9,7 @@ import { RaffleManager } from '../components/RaffleManager';
 import { PreviousCoinRaffles } from '../components/PreviousCoinRaffles';
 import Script from 'next/script';
 import 'flowbite';
-import Link from 'next/link';
+import CreateCoinRaffle from '../components/CreateCoinRaffle';
 /**
  * SVGR Support
  * Caveat: No React Props Type.
@@ -31,17 +31,8 @@ export default function HomePage() {
         <main>
           <Navbar></Navbar>
           <section>
-            <div className='mt-3 width-full text-center'>
-              {/* TODO: ray: 看有沒有漂亮的版可以套一下 landing page? 或者 index 這頁直接 redirect coin raffle? */}
-              <h1>Welcome to Bucket Raffle System</h1>
-              <hr className='my-4'></hr>
-              <Link
-                href={`/coinRaffle`}
-                className='h2 bg-blue-500 hover:bg-blue-700 rounded-lg px-4 py-1 text-white'
-              >
-                Go To Coin Raffle
-              </Link>
-            </div>
+            <CreateCoinRaffle></CreateCoinRaffle>
+            <PreviousCoinRaffles></PreviousCoinRaffles>
           </section>
         </main>
       </Layout>

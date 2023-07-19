@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useWalletKit } from '@mysten/wallet-kit';
 import getSuiProvider from '../lib/getSuiProvider';
-import { createCoinRaffle } from '../lib/createCoinRaffle';
+import { createCoinRaffle } from './CreateCoinRaffle';
 import { settleCoinRaffle } from '../lib/settleCoinRaffle';
 import { getRaffleFields } from '../lib/getRaffleFields';
 import { decimals } from '../lib/config';
@@ -153,7 +153,7 @@ export default function CreateCoinRaffle() {
   };
 
   return (
-    <div>
+    <div className='mx-auto max-w-full bg-gray-800 p-6 shadow'>
       <div className='flex'>
         <div className='w-1/2'>
           <div className='border-gray-light2 bg-white text-black relative my-2 flex items-center rounded-lg border px-2 py-1'>
@@ -239,6 +239,7 @@ export default function CreateCoinRaffle() {
         </div>
         <div className='w-1/2'>
           <div className='ml-2 my-2 h-full'>
+            <p className='text-white'>Participant Addresses</p>
             <textarea
               className='w-full h-3/4 rounded p-2 overflow-x-auto'
               value={addresses}
