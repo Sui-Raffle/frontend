@@ -7,9 +7,10 @@ const defaultMeta = {
   siteName: 'Bucket Raffle System',
   description: 'Raffle on Sui Network.',
   /** Without additional '/' on the end, e.g. https://theodorusclarence.com */
-  // url: 'https://tsnext-tw.thcl.dev',
+  url: 'https://raffle.bucketprotocol.io',
   type: 'website',
   // robots: 'follow, index',
+  robots: '',
   /**
    * No need to be filled, will be populated with openGraph function
    * If you wish to use a normal image, just specify the path below
