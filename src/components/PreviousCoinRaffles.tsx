@@ -179,7 +179,9 @@ export function PreviousCoinRaffles() {
                       raffle.creator.length - 3
                     )}`}
                   </td>
-                  <td>{prizeField()}</td>
+                  <td className='py-4 px-6 border-b border-gray-200'>
+                    {prizeField()}
+                  </td>
                   <td className='py-4 px-6 border-b border-gray-200'>
                     {raffle.participants.length}
                   </td>
