@@ -15,6 +15,7 @@ const defaultMeta = {
    * If you wish to use a normal image, just specify the path below
    */
   image: 'https://app.bucketprotocol.io/BKT.svg',
+  icon: 'https://app.bucketprotocol.io/BKT.svg',
 };
 
 type SeoProps = {
@@ -45,6 +46,7 @@ export default function Seo(props: SeoProps) {
   return (
     <Head>
       <title>{meta.title}</title>
+
       <meta name='robots' content={meta.robots} />
       <meta content={meta.description} name='description' />
       <meta property='og:url' content={`${meta.url}${router.asPath}`} />
@@ -80,9 +82,10 @@ export default function Seo(props: SeoProps) {
       )}
 
       {/* Favicons */}
-      {favicons.map((linkProps) => (
+      {/* {favicons.map((linkProps) => (
         <link key={linkProps.href} {...linkProps} />
-      ))}
+      ))} */}
+      <link rel='icon' href={meta.icon} />
       <meta name='msapplication-TileColor' content='#ffffff' />
       <meta name='msapplication-config' content='/favicon/browserconfig.xml' />
       <meta name='theme-color' content='#ffffff' />

@@ -5,7 +5,7 @@ import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 
 import Navbar from '../components/Navbar';
-import { RaffleManager } from '../components/RaffleManager';
+import { RaffleManager } from '../components/unused/RaffleManager';
 import { PreviousCoinRaffles } from '../components/PreviousCoinRaffles';
 import Script from 'next/script';
 import 'flowbite';
