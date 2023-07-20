@@ -150,7 +150,6 @@ export function PreviousCoinRaffles() {
                 );
               };
               let raffleActions = () => {
-                console.log('actionPending', actionPending);
                 if (raffle.status == 0) {
                   // In Progress
                   return (

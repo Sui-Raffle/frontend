@@ -305,7 +305,7 @@ export default function CreateCoinRaffle() {
                           coinType: coin.type,
                           ...CoinMetadatas[coin.type],
                         });
-                        let a = document
+                        document
                           .getElementById('coinSelectDropdownButton')
                           .click();
                       };
@@ -329,11 +329,6 @@ export default function CreateCoinRaffle() {
                       return <></>;
                     }
                   })}
-                  <li>
-                    <button className='block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'>
-                      Type A
-                    </button>
-                  </li>
                 </ul>
               </div>
             </div>
@@ -343,7 +338,7 @@ export default function CreateCoinRaffle() {
           <div className='ml-2 my-2 h-full'>
             <p className='text-white'>Participant Addresses</p>
             <textarea
-              className='w-full h-3/4 rounded p-2 overflow-x-auto'
+              className='w-full h-3/4 rounded p-2 overflow-x-auto text-xs'
               value={addresses}
               onChange={handleAddressesChange}
             ></textarea>

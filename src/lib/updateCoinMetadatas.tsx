@@ -15,6 +15,9 @@ export async function updateCoinMetadatas(coinTypes: never[], walletKit: any) {
         let coinMetadata: any = await provider?.getCoinMetadata({
           coinType,
         });
+        if (coinType == '0x2::sui::SUI' && !coinMetadata.iconUrl) {
+          coinMetadata.iconUrl = '/images/sui.png';
+        }
         CoinMetadatas[coinType] = coinMetadata;
         break;
       } catch (e: any) {
