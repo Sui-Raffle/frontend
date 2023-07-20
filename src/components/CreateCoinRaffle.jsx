@@ -167,6 +167,7 @@ export default function CreateCoinRaffle() {
     });
     setTxRunning(false);
     if (result) {
+      setGettingRaffleFieldsById(false);
       setCurrentRaffleFields({});
     } else {
       alert(
