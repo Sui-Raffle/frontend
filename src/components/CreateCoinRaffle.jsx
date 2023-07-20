@@ -167,8 +167,15 @@ export default function CreateCoinRaffle() {
     });
     setTxRunning(false);
     if (result) {
-      setGettingRaffleFieldsById(false);
-      setCurrentRaffleFields({});
+      let updateRaffleFields = async () => {
+        let raffleFields = await getRaffleFields({
+          walletKit,
+          raffleObjId: currentRaffleObjId,
+        });
+        setCurrentRaffleFields(raffleFields);
+      };
+      await updateRaffleFields();
+      setTimeout(updateRaffleFields, 1000);
     } else {
       alert(
         'This raffle is not ready yet. Please wait a few seconds and try again.'
@@ -363,7 +370,7 @@ export default function CreateCoinRaffle() {
             </div>
             <button
               className='w-full bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
-              onClick={window.location.reload()}
+              onClick={window.location.reload}
             >
               Create Another Raffle
             </button>
