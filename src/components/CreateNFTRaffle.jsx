@@ -24,7 +24,7 @@ export default function CreateCoinRaffle() {
   const [gettedUserCoinsList, setGettedUserCoinsList] = useState(false);
 
   const [currentCoinInfo, setCurrentCoinInfo] = useState({
-    iconUrl: null,
+    iconUrl: '/images/sui.png',
     coinType: '0x2::sui::SUI',
     name: 'Sui',
     symbol: 'SUI',
