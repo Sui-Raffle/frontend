@@ -8,6 +8,7 @@ import { CoinMetadatas } from '../lib/config';
 import { updateCoinMetadatas } from '@/lib/updateCoinMetadatas';
 import RingAnimation from './RingAnimation';
 import { sleep } from '../lib/sleep.jsx';
+import { getNetwork, getNetworkIgnoreError } from '../lib/getNetwork';
 
 export default function CreateCoinRaffle() {
   let walletKit = useWalletKit();
@@ -338,7 +339,7 @@ export default function CreateCoinRaffle() {
           <div className='ml-2 my-2 h-full'>
             <p className='text-white'>Participant Addresses</p>
             <textarea
-              className='w-full h-3/4 rounded p-2 overflow-x-auto text-xs'
+              className='w-full h-3/4 rounded p-2 overflow-x-auto text-sm'
               value={addresses}
               onChange={handleAddressesChange}
             ></textarea>
@@ -373,14 +374,14 @@ export default function CreateCoinRaffle() {
             onClick={handleStartRaffle}
             disabled={!winnerCount || !addresses}
           >
-            Start Raffle
+            Start Raffle {getNetworkIgnoreError(walletKit, 'on ')}
           </button>
         )) || (
           <button
             className='w-full bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
             onClick={handleSettleRaffle}
           >
-            Settle Raffle
+            Settle Raffle {getNetworkIgnoreError(walletKit, 'on ')}
           </button>
         )}
       {}

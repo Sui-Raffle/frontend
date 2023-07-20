@@ -9,6 +9,7 @@ import { updateCoinMetadatas } from '@/lib/updateCoinMetadatas';
 import RingAnimation from './RingAnimation';
 import { sleep } from '../lib/sleep.jsx';
 import NextImage from '@/components/NextImage';
+import { getNetwork, getNetworkIgnoreError } from '../lib/getNetwork';
 
 export default function CreateCoinRaffle() {
   let walletKit = useWalletKit();
@@ -256,14 +257,14 @@ export default function CreateCoinRaffle() {
             onClick={handleStartRaffle}
             disabled={!winnerCount || !addresses}
           >
-            Start Raffle
+            Start Raffle {getNetworkIgnoreError(walletKit, 'on ')}
           </button>
         )) || (
           <button
             className='w-full bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
             onClick={handleSettleRaffle}
           >
-            Settle Raffle
+            Settle Raffle {getNetworkIgnoreError(walletKit, 'on ')}
           </button>
         )}
       {}
