@@ -17,8 +17,7 @@ export default function CreateCoinRaffle() {
   const [currentRaffleFields, setCurrentRaffleFields] = useState({});
   const [txRunning, setTxRunning] = useState(false);
 
-  let defaultPrizeNftObjectIDs =
-    '0x0b5cf20b9efed7b85663c09b2bcd3ed3ec1bbc9c9aed03e466ad446f698f7b22, 0x6e134ea5b10b089b11f75de2519877260d781027322d0bd698793e35e8e272da';
+  let defaultPrizeNftObjectIDs = '';
   const [prizeNftObjectIDs, setPrizeNftObjectIDs] = useState(
     defaultPrizeNftObjectIDs
   );
@@ -247,17 +246,18 @@ export default function CreateCoinRaffle() {
             <label className='w-full'>NFT(s)</label>
             {/* {JSON.stringify(prizeNFTs)} */}
             {prizeNFTs.map((nft, index) => {
-              console.log(nft.data.display.data.image_url);
-              return (
-                <img
-                  key={index}
-                  className='w-32 h-32 md:w-40 border'
-                  src={nft.data.display.data.image_url}
-                  width='180'
-                  height='180'
-                  alt='Icon'
-                />
-              );
+              if (nft && nft.data && nft.data.display) {
+                return (
+                  <img
+                    key={index}
+                    className='w-32 h-32 md:w-40 border'
+                    src={nft.data.display.data.image_url}
+                    width='180'
+                    height='180'
+                    alt='Icon'
+                  />
+                );
+              }
             })}
           </div>
         </div>
