@@ -16,59 +16,58 @@ export function PreviousCoinRaffles() {
   const [coinMetadatasReady, setCoinMetadatasReady] = React.useState(false);
   const [actionPending, setActionPending] = React.useState(Object());
 
-  // TODO: ray: 需要queryEvents 只發生一次就夠了，但要等 walletKit Ready
-  // 另外，使用者應該可以手動觸發重整，因為可以透過 RaffleEventsNextCursor 找到更之前的資料，但這等 Event 夠多再來寫
-  if (walletKit && walletKit.currentAccount && !raffleFetched) {
-    setRaffleFetched(true);
-    let network = getNetwork(walletKit);
-    let provider = getSuiProvider(network);
+  React.useEffect(() => {
+    if (walletKit && walletKit.currentAccount) {
+      let network = getNetwork(walletKit);
+      let provider = getSuiProvider(network);
 
-    provider
-      ?.queryEvents({
-        query: {
-          MoveEventType: `${RafflePackageId[network]}::raffle::CoinRaffleCreated`,
-        },
-      })
-      .then(async (events) => {
-        if (events.hasNextPage) {
-          ('');
-          // 等有夠多再來寫比較快
-        }
-        let raffeObjIds = events.data.map(
-          (event: any) => event.parsedJson.raffle_id
-        );
-        let RafflesEventData: any = {};
-        for (let index = 0; index < events.data.length; index++) {
-          const event: any = events.data[index];
+      provider
+        ?.queryEvents({
+          query: {
+            MoveEventType: `${RafflePackageId[network]}::raffle::CoinRaffleCreated`,
+          },
+        })
+        .then(async (events) => {
+          if (events.hasNextPage) {
+            ('');
+            // 等有夠多再來寫比較快
+          }
+          let raffeObjIds = events.data.map(
+            (event: any) => event.parsedJson.raffle_id
+          );
+          let RafflesEventData: any = {};
+          for (let index = 0; index < events.data.length; index++) {
+            const event: any = events.data[index];
 
-          RafflesEventData[event.parsedJson.raffle_id] = {
-            timestampMs: event.timestampMs,
-            prizeAmount: event.parsedJson.prizeAmount,
-          };
-        }
-        let network = getNetwork(walletKit);
-        let provider = getSuiProvider(network);
+            RafflesEventData[event.parsedJson.raffle_id] = {
+              timestampMs: event.timestampMs,
+              prizeAmount: event.parsedJson.prizeAmount,
+            };
+          }
+          let network = getNetwork(walletKit);
+          let provider = getSuiProvider(network);
 
-        let res = await provider?.multiGetObjects({
-          ids: raffeObjIds,
-          options: { showContent: true },
+          let res = await provider?.multiGetObjects({
+            ids: raffeObjIds,
+            options: { showContent: true },
+          });
+          let raffles: any = res?.map((item: any) => {
+            return {
+              ...RafflesEventData[item.data.objectId],
+              ...item.data.content,
+              ...item.data.content.fields,
+            };
+          });
+
+          setRaffles(raffles);
+          let raffleTypes = raffles.map((raffle: any) =>
+            getRaffleCoinType(raffle.type)
+          );
+          await updateCoinMetadatas(raffleTypes, walletKit);
+          setCoinMetadatasReady(true);
         });
-        let raffles: any = res?.map((item: any) => {
-          return {
-            ...RafflesEventData[item.data.objectId],
-            ...item.data.content,
-            ...item.data.content.fields,
-          };
-        });
-
-        setRaffles(raffles);
-        let raffleTypes = raffles.map((raffle: any) =>
-          getRaffleCoinType(raffle.type)
-        );
-        await updateCoinMetadatas(raffleTypes, walletKit);
-        setCoinMetadatasReady(true);
-      });
-  }
+    }
+  }, [walletKit]);
   // if (createRaffleEvents.length) {
   //   let newRaffleEvents = updateRaffleEventsCoinMetadata(
   //     createRaffleEvents,
