@@ -315,7 +315,7 @@ export default function CreateCoinRaffle() {
                           .click();
                       };
                       return (
-                        <li key={index}>
+                        <li key={`${index}`}>
                           <button
                             className='block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
                             onClick={handleOnClick}
@@ -331,7 +331,7 @@ export default function CreateCoinRaffle() {
                         </li>
                       );
                     } else {
-                      return <></>;
+                      return <li key={`${index}`}></li>;
                     }
                   })}
                 </ul>
