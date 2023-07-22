@@ -11,7 +11,6 @@ export let getRaffleFields = async ({ walletKit, raffleObjId }) => {
       showType: true,
     },
   });
-  console.log('raffleObj:', raffleObj);
   let type = raffleObj.data.type;
   return {
     type: type,

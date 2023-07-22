@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useWalletKit } from '@mysten/wallet-kit';
 import getSuiProvider from '../lib/getSuiProvider';
 import { moveCallCreateCoinRaffle } from '../lib/moveCallCreateCoinRaffle';
@@ -18,7 +18,7 @@ export default function CreateCoinRaffle() {
   const [currentRaffleFields, setCurrentRaffleFields] = useState({});
   const [txRunning, setTxRunning] = useState(false);
   const [userCoinsList, setUserCoinsList] = useState([]);
-  const [gettedUserCoinsList, setGettedUserCoinsList] = useState(false);
+
   const [coinMetadataReady, setCoinMetadataReady] = useState(false);
   const [currentCoinInfo, setCurrentCoinInfo] = useState({
     iconUrl: null,
@@ -26,88 +26,77 @@ export default function CreateCoinRaffle() {
     name: 'Sui',
     symbol: 'SUI',
   });
-
-  // TODO: ray:
-  if (!gettedUserCoinsList && walletKit && walletKit.currentAccount) {
+  useEffect(() => {
     let run = async () => {
-      setGettedUserCoinsList(true);
-      window.walletKit = walletKit;
-
-      let network = walletKit.currentAccount.chains[0].split('sui:')[1];
-      let provider = getSuiProvider(network);
-      let userCoins = [];
-      let nextCursor = '';
-      let res;
-      do {
-        res = await provider.getAllCoins({
-          owner: walletKit.currentAccount.address,
-          nextCursor,
+      if (
+        walletKit &&
+        walletKit.currentAccount &&
+        walletKit.currentAccount.chains
+      ) {
+        let network = walletKit.currentAccount.chains[0].split('sui:')[1];
+        let provider = getSuiProvider(network);
+        let userCoins = [];
+        let nextCursor = '';
+        let res;
+        do {
+          res = await provider.getAllCoins({
+            owner: walletKit.currentAccount.address,
+            nextCursor,
+          });
+          userCoins = userCoins.concat(res.data);
+          nextCursor = res.nextCursor;
+        } while (res.hasNextPage);
+        let coinSum = {};
+        userCoins.forEach((coin) => {
+          if (coinSum[coin.coinType]) {
+            coinSum[coin.coinType].balance += Number(coin.balance);
+          } else {
+            coinSum[coin.coinType] = {
+              type: coin.coinType,
+              balance: Number(coin.balance),
+            };
+          }
         });
-        userCoins = userCoins.concat(res.data);
-        nextCursor = res.nextCursor;
-      } while (res.hasNextPage);
-      let coinSum = {};
-      userCoins.forEach((coin) => {
-        if (coinSum[coin.coinType]) {
-          coinSum[coin.coinType].balance += Number(coin.balance);
-        } else {
-          coinSum[coin.coinType] = {
-            type: coin.coinType,
-            balance: Number(coin.balance),
-          };
-        }
-      });
-      setUserCoinsList(Array.from(Object.values(coinSum)));
-      await updateCoinMetadatas(Array.from(Object.keys(coinSum)), walletKit);
-      setCoinMetadataReady(true);
+        setUserCoinsList(Array.from(Object.values(coinSum)));
+        await updateCoinMetadatas(Array.from(Object.keys(coinSum)), walletKit);
+        setCoinMetadataReady(true);
 
-      // todo: may have next cursor
+        // todo: may have next cursor
+      }
     };
     run();
-  }
+  }, [walletKit]);
 
-  // TODO: ray: 需要 getRaffleFields 只發生一次就夠了，但要等 walletKit Ready，且 currentRaffleObjId 有值，且 currentRaffleFields 為空
-  const [gettingRaffleFieldsById, setGettingRaffleFieldsById] = useState(false);
-  if (
-    currentRaffleObjId &&
-    !gettingRaffleFieldsById &&
-    !currentRaffleFields.id &&
-    walletKit &&
-    walletKit.currentAccount
-  ) {
+  useEffect(() => {
     let run = async () => {
-      setGettingRaffleFieldsById(true);
-      console.log('run:');
-      let raffleFields = await getRaffleFields({
-        walletKit,
-        raffleObjId: currentRaffleObjId,
-      });
-      setCurrentRaffleFields(raffleFields);
-      console.log('raffleFields:', raffleFields);
-      setRaffleName(raffleFields.name);
-      setWinnerCount(raffleFields.winner_count);
-      await updateCoinMetadatas([raffleFields.coin_type], walletKit);
-      setPrizeBalance(
-        raffleFields.balance /
-          10 ** CoinMetadatas[raffleFields.coin_type].decimals
-      ); //
-      setAddresses(
-        raffleFields.participants.join('\n') + raffleFields.winners.join('\n')
-      );
-      setGettingRaffleFieldsById(false);
+      if (
+        currentRaffleObjId &&
+        !currentRaffleFields.id &&
+        walletKit &&
+        walletKit.currentAccount
+      ) {
+        let raffleFields = await getRaffleFields({
+          walletKit,
+          raffleObjId: currentRaffleObjId,
+        });
+        setCurrentRaffleFields(raffleFields);
+        console.log('raffleFields:', raffleFields);
+        setRaffleName(raffleFields.name);
+        setWinnerCount(raffleFields.winner_count);
+        await updateCoinMetadatas([raffleFields.coin_type], walletKit);
+        setPrizeBalance(
+          raffleFields.balance /
+            10 ** CoinMetadatas[raffleFields.coin_type].decimals
+        ); //
+        setAddresses(
+          raffleFields.participants.join('\n') + raffleFields.winners.join('\n')
+        );
+      }
     };
     run();
-  }
-  // TODO: ray: 需要 getTransactionBlock 只發生一次就夠了，但要等 walletKit Ready 且 startRaffleDigest 有值且 currentRaffleObjId 為空
-  const [gettingRaffleIdByDigest, setGettingRaffleIdByDigest] = useState(false);
-  if (
-    startRaffleDigest &&
-    !gettingRaffleIdByDigest &&
-    !currentRaffleObjId &&
-    walletKit &&
-    walletKit.currentAccount
-  ) {
-    setGettingRaffleIdByDigest(true);
+  }, [walletKit, currentRaffleObjId, currentRaffleFields]);
+
+  useEffect(() => {
     let run = async () => {
       try {
         let network = walletKit.currentAccount.chains[0].split('sui:')[1];
@@ -130,10 +119,10 @@ export default function CreateCoinRaffle() {
         await sleep(1000);
         run();
       }
-      setGettingRaffleIdByDigest(false);
     };
     run();
-  }
+  }, [walletKit, startRaffleDigest]);
+
   // raffle name Handeler
   let raffleNameDefault = '';
   const [raffleName, setRaffleName] = useState(raffleNameDefault);
@@ -246,7 +235,7 @@ export default function CreateCoinRaffle() {
               className='placeholder-gray-light2 block w-full rounded-lg border-transparent bg-transparent p-2 pr-32 text-sm focus:outline-none lg:text-lg mx-3'
               placeholder='0'
               onChange={handlePrizeBalanceChange}
-              value={prizeBalance}
+              value={prizeBalance || ''}
               disabled={currentRaffleObjId}
             />
             <div className='w-38 absolute inset-y-0 right-0 flex items-center rounded-lg'>
@@ -370,7 +359,9 @@ export default function CreateCoinRaffle() {
             </div>
             <button
               className='w-full bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
-              onClick={window.location.reload}
+              onClick={() => {
+                window.location.reload();
+              }}
             >
               Create Another Raffle
             </button>
