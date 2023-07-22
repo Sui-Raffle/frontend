@@ -112,11 +112,24 @@ export function PreviousCoinRaffles() {
             {raffles.map((raffle: any, index) => {
               let coinMetadata = CoinMetadatas[getRaffleCoinType(raffle.type)];
               let settleRaffleButtonId = `settle-raffle-${index}-${raffle.id.id}`;
+              let icon = () => {
+                if (coinMetadata.iconUrl) {
+                  return (
+                    <img
+                      className='inline-block h-6 w-6 mx-1'
+                      src={coinMetadata.iconUrl}
+                    />
+                  );
+                } else {
+                  return <></>;
+                }
+              };
               let prizeField = () => {
                 if (coinMetadatasReady) {
                   return (
                     <span>
                       {raffle.prizeAmount / 10 ** coinMetadata.decimals}{' '}
+                      {icon()}
                       {coinMetadata.name}
                     </span>
                   );
@@ -146,7 +159,7 @@ export function PreviousCoinRaffles() {
                 let network =
                   walletKit.currentAccount.chains[0].split('sui:')[1];
                 window.open(
-                  `https://suiexplorer.com/object/${raffle.id.id}?network=${network}`,
+                  `https://suiexplorer.com/object/${raffle.id.id}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`,
                   '_blank'
                 );
               };
@@ -189,6 +202,7 @@ export function PreviousCoinRaffles() {
                   <a
                     href={`https://suiexplorer.com/address/${raffle.creator}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`}
                     target='_blank'
+                    className='text-blue-500 hover:text-blue-800'
                   >
                     {`${raffle.creator.substring(
                       0,
