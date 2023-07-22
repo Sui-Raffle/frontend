@@ -98,26 +98,33 @@ export default function CreateCoinRaffle() {
 
   useEffect(() => {
     let run = async () => {
-      try {
-        let network = walletKit.currentAccount.chains[0].split('sui:')[1];
-        let provider = getSuiProvider(network);
-        // console.log('walletKit:', walletKit);
-        console.log(
-          'let transactionBlock = await provider.getTransactionBlock({'
-        );
-        let transactionBlock = await provider.getTransactionBlock({
-          digest: startRaffleDigest,
-          options: { showObjectChanges: true },
-        });
-        setTxRunning(false);
-        let raffleObjId = transactionBlock.objectChanges.filter((obj) => {
-          return obj.type == 'created';
-        })[0].objectId;
-        setCurrentRaffleObjId(raffleObjId);
-      } catch (e) {
-        console.log('ERROR:', e);
-        await sleep(1000);
-        run();
+      if (
+        walletKit &&
+        walletKit.currentAccount &&
+        walletKit.currentAccount.chains &&
+        startRaffleDigest
+      ) {
+        try {
+          let network = walletKit.currentAccount.chains[0].split('sui:')[1];
+          let provider = getSuiProvider(network);
+          // console.log('walletKit:', walletKit);
+          console.log(
+            'let transactionBlock = await provider.getTransactionBlock({'
+          );
+          let transactionBlock = await provider.getTransactionBlock({
+            digest: startRaffleDigest,
+            options: { showObjectChanges: true },
+          });
+          setTxRunning(false);
+          let raffleObjId = transactionBlock.objectChanges.filter((obj) => {
+            return obj.type == 'created';
+          })[0].objectId;
+          setCurrentRaffleObjId(raffleObjId);
+        } catch (e) {
+          console.log('ERROR:', e);
+          await sleep(1000);
+          run();
+        }
       }
     };
     run();
