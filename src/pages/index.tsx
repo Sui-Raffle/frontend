@@ -6,6 +6,8 @@ import Seo from '@/components/Seo';
 
 import Navbar from '../components/Navbar';
 
+import CreateCoinRaffle from '../components/CreateCoinRaffle';
+
 import { PreviousCoinRaffles } from '../components/PreviousCoinRaffles';
 import Script from 'next/script';
 import 'flowbite';
@@ -31,8 +33,11 @@ export default function HomePage() {
         <main>
           <Navbar></Navbar>
           <section>
+            <CreateCoinRaffle></CreateCoinRaffle>
+            <PreviousCoinRaffles></PreviousCoinRaffles>
+          </section>
+          {/* <section>
             <div className='mt-3 width-full text-center'>
-              {/* TODO: ray: 看有沒有漂亮的版可以套一下 landing page? 或者 index 這頁直接 redirect coin raffle? */}
               <h1>Welcome to Bucket Raffle System</h1>
               <hr className='my-4'></hr>
               <Link
@@ -42,7 +47,7 @@ export default function HomePage() {
                 Go To Coin Raffle
               </Link>
             </div>
-          </section>
+          </section> */}
         </main>
       </Layout>
     </WalletKitProvider>
