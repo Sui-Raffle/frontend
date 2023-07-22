@@ -5,6 +5,7 @@ import getSuiProvider from '../lib/getSuiProvider';
 import { CoinMetadatas } from '../lib/config';
 import { moveCallSettleCoinRaffle } from '../lib/moveCallSettleCoinRaffle';
 import { RafflePackageId } from '../lib/config';
+import { getNetwork } from '../lib/getNetwork';
 import { updateCoinMetadatas } from '../lib/updateCoinMetadatas';
 import Button from '@/components/buttons/Button';
 import { ImSpinner2 } from 'react-icons/im';
@@ -19,7 +20,7 @@ export function PreviousCoinRaffles() {
   // 另外，使用者應該可以手動觸發重整，因為可以透過 RaffleEventsNextCursor 找到更之前的資料，但這等 Event 夠多再來寫
   if (walletKit && walletKit.currentAccount && !raffleFetched) {
     setRaffleFetched(true);
-    let network = walletKit.currentAccount.chains[0].split('sui:')[1];
+    let network = getNetwork(walletKit);
     let provider = getSuiProvider(network);
 
     provider
@@ -45,7 +46,7 @@ export function PreviousCoinRaffles() {
             prizeAmount: event.parsedJson.prizeAmount,
           };
         }
-        let network = walletKit.currentAccount.chains[0].split('sui:')[1];
+        let network = getNetwork(walletKit);
         let provider = getSuiProvider(network);
 
         let res = await provider?.multiGetObjects({
@@ -182,6 +183,22 @@ export function PreviousCoinRaffles() {
                   );
                 }
               };
+              let displayAddress = () => {
+                let network = getNetwork(walletKit);
+                return (
+                  <a
+                    href={`https://suiexplorer.com/address/${raffle.creator}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`}
+                    target='_blank'
+                  >
+                    {`${raffle.creator.substring(
+                      0,
+                      5
+                    )}...${raffle.creator.substring(
+                      raffle.creator.length - 3
+                    )}`}
+                  </a>
+                );
+              };
               return (
                 <tr key={index}>
                   <td className='py-4 px-6 border-b border-gray-200'>
@@ -195,12 +212,7 @@ export function PreviousCoinRaffles() {
                     {parseTimestamp(Number(raffle.timestampMs))}
                   </td>
                   <td className='py-4 px-6 border-b border-gray-200'>
-                    {`${raffle.creator.substring(
-                      0,
-                      5
-                    )}...${raffle.creator.substring(
-                      raffle.creator.length - 3
-                    )}`}
+                    {displayAddress()}
                   </td>
                   <td className='py-4 px-6 border-b border-gray-200'>
                     {prizeField()}
