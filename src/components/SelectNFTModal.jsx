@@ -62,6 +62,7 @@ export default function SelectNFTModal({
           }
         });
         setOwnNFTs(NFTs);
+        // console.log('NFTs:', NFTs);
       }
     };
     run();
@@ -182,7 +183,8 @@ export default function SelectNFTModal({
                       />
                       <div className='p-5'>
                         <h5 className='mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'>
-                          {item.data.display.data.name}
+                          {item.data.display.data.name ||
+                            item.data.display.data.description}
                         </h5>
                       </div>
                     </div>
