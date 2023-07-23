@@ -13,7 +13,8 @@ import { ImSpinner2 } from 'react-icons/im';
 export function PreviousCoinRaffles() {
   const walletKit: any = useWalletKit();
   const [raffles, setRaffles] = React.useState([]);
-  const [raffleFetched, setRaffleFetched] = React.useState(false);
+  // const [raffleFetched, setRaffleFetched] = React.useState(false);
+  const [actionPending, setActionPending] = React.useState<any>({});
   const [coinMetadatasReady, setCoinMetadatasReady] = React.useState(false);
   const [listedNftIds, setListedNftIds] = React.useState([]);
   const [listedNftObjs, setListedNftObjs] = React.useState<any>({});
