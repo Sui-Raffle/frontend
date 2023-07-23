@@ -18,36 +18,7 @@ export default function CreateCoinRaffle() {
   const [currentRaffleFields, setCurrentRaffleFields] = useState({});
   const [txRunning, setTxRunning] = useState(false);
 
-  let defaultPrizeNftObjectIDs = '';
-  const [prizeNftObjectIDs, setPrizeNftObjectIDs] = useState(
-    defaultPrizeNftObjectIDs
-  );
-  const handlePrizeNftObjectIDsChange = (event) => {
-    setPrizeNftObjectIDs(event.target.value);
-  };
   const [prizeNFTs, setPrizeNFTs] = useState([]);
-
-  useEffect(() => {
-    let run = async () => {
-      let _prizeNftObjectIDs = prizeNftObjectIDs.split(', ');
-      if (_prizeNftObjectIDs.length && walletKit && walletKit.currentAccount) {
-        try {
-          let network = getNetwork(walletKit);
-          let provider = getSuiProvider(network);
-          let NFTs = await provider.multiGetObjects({
-            ids: _prizeNftObjectIDs,
-            options: { showContent: true, showType: true, showDisplay: true },
-          });
-          setPrizeNFTs(NFTs);
-          return;
-        } catch (e) {
-          ('');
-        }
-      }
-      setPrizeNFTs([]);
-    };
-    run();
-  }, [prizeNftObjectIDs, walletKit]);
 
   useEffect(() => {
     let run = async () => {
