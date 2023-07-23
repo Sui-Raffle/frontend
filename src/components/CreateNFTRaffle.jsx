@@ -8,7 +8,8 @@ import { getRaffleFields } from '../lib/getRaffleFields';
 import RingAnimation from './RingAnimation';
 import { sleep } from '../lib/sleep.jsx';
 import { getNetwork, getNetworkIgnoreError } from '../lib/getNetwork';
-
+import { renderNftSelectorModel } from './renderNftSelectorModel';
+import { formatImageUrl } from '../lib/formatImageUrl';
 export default function CreateCoinRaffle() {
   let walletKit = useWalletKit();
 
@@ -216,6 +217,10 @@ export default function CreateCoinRaffle() {
     setTxRunning(false);
   };
 
+  let handleNftSelectorOnConfirm = (selectedNFTs) => {
+    setPrizeNFTs(selectedNFTs);
+  };
+
   return (
     <div className='mx-auto max-w-full bg-gray-800 p-6 shadow'>
       <div className='flex'>
@@ -231,34 +236,39 @@ export default function CreateCoinRaffle() {
               disabled={currentRaffleObjId}
             />
           </div>
-          <div className='border-gray-light2 bg-white text-black relative my-2 flex items-center rounded-lg border px-2 py-1'>
-            <label className='w-full '>NFT ObjectIDs</label>
-            <input
-              type='text'
-              className='placeholder-gray-light2 block w-full rounded-lg border-transparent bg-transparent '
-              placeholder='Name of your Raffle'
-              value={prizeNftObjectIDs}
-              onChange={handlePrizeNftObjectIDsChange}
-              disabled={currentRaffleObjId}
-            />
-          </div>
-          <div className='border-gray-light2 bg-white text-black relative my-2 flex items-center rounded-lg border px-2 py-1'>
-            <label className='w-full'>NFT(s)</label>
-            {/* {JSON.stringify(prizeNFTs)} */}
-            {prizeNFTs.map((nft, index) => {
-              if (nft && nft.data && nft.data.display) {
+
+          <div className='border-gray-light2 bg-white text-black relative my-2  items-center rounded-lg border px-2 py-1'>
+            <p className='text-center w-full'>
+              Prize NFTs ({prizeNFTs.length})
+            </p>
+            <div
+              className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-2'
+              style={{ '-ms-overflow-style': 'none' }}
+            >
+              {prizeNFTs.map((item, index) => {
                 return (
-                  <img
+                  <div
                     key={index}
-                    className='w-32 h-32 md:w-40 border'
-                    src={nft.data.display.data.image_url}
-                    width='180'
-                    height='180'
-                    alt='Icon'
-                  />
+                    className={`max-w-sm bg-white border border-gray-200 
+                      rounded-lg shadow dark:bg-gray-800 dark:border-gray-700
+                      
+                      `}
+                  >
+                    <img
+                      class='w-full'
+                      src={formatImageUrl(item.data.display.data.image_url)}
+                      alt=''
+                    />
+                    <div class='p-5'>
+                      <p class='mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'>
+                        {item.data.display.data.name}
+                      </p>
+                    </div>
+                  </div>
                 );
-              }
-            })}
+              })}
+            </div>
+            {renderNftSelectorModel(walletKit, handleNftSelectorOnConfirm)}
           </div>
         </div>
         <div className='w-1/2'>

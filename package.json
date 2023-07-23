@@ -18,6 +18,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.15",
     "@mysten/sui.js": "^0.37.1",
     "@mysten/wallet-kit": "^0.4.12",
     "clsx": "^1.2.1",
