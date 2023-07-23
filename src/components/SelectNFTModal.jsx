@@ -85,6 +85,7 @@ export default function SelectNFTModal({
   }
   let address = walletKit.currentAccount.address;
   const HandleChange = () => {
+    console.log('HandleChange:');
     setIsOpen(!isOpen);
   };
   return (
@@ -119,8 +120,12 @@ export default function SelectNFTModal({
           <div
             style={{ zIndex: '2' }}
             className='flex justify-center items-center h-full w-full fixed inset-0'
+            // onClick={() => HandleChange()}
           >
             <div
+              onClick={(event) => {
+                event.stopPropagation();
+              }}
               className={`max-w-[72rem] w-full ${
                 classes ? classes : 'p-4 bg-white rounded-lg'
               }`}
@@ -150,7 +155,7 @@ export default function SelectNFTModal({
               </div>
               <div
                 className='grid grid-cols-1 md:grid-cols-4 gap-4 overflow-x-scroll'
-                style={{ height: '70vh' }}
+                style={{ maxHeight: '70vh' }}
               >
                 {displayNFTs.map((item, index) => {
                   let isSelected = selectedNFTs.includes(item);
@@ -171,12 +176,12 @@ export default function SelectNFTModal({
                       onClick={handleSelect}
                     >
                       <img
-                        class='w-full'
+                        className='w-full'
                         src={formatImageUrl(item.data.display.data.image_url)}
                         alt=''
                       />
-                      <div class='p-5'>
-                        <h5 class='mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'>
+                      <div className='p-5'>
+                        <h5 className='mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'>
                           {item.data.display.data.name}
                         </h5>
                       </div>
