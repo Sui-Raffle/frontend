@@ -22,24 +22,24 @@ export function PreviousCoinRaffles() {
     if (
       walletKit &&
       walletKit.currentAccount &&
-      Object.keys(listedNftObjs).length == 0
+      Object.keys(listedNftObjs).length == 0 &&
+      listedNftIds.length
     ) {
       (async () => {
         let network = getNetwork(walletKit);
         let provider = getSuiProvider(network);
         let NftObjs = Object();
-        let res: any = {};
-        do {
-          res = await provider?.multiGetObjects({
-            ids: listedNftIds,
-            options: { showContent: true, showDisplay: true },
-          });
-          for (let index = 0; index < listedNftIds.length; index++) {
-            const id = listedNftIds[index];
-            const obj = res[index].data;
-            NftObjs[id] = obj;
-          }
-        } while (res.hasNextPage);
+
+        let res: any = await provider?.multiGetObjects({
+          ids: listedNftIds,
+          options: { showContent: true, showDisplay: true },
+        });
+        for (let index = 0; index < listedNftIds.length; index++) {
+          const id = listedNftIds[index];
+          const obj = res[index].data;
+          NftObjs[id] = obj;
+        }
+
         setListedNftObjs(NftObjs);
       })();
     }
