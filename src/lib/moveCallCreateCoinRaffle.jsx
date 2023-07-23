@@ -29,16 +29,15 @@ export let moveCallCreateCoinRaffle = async ({
       await updateCoinMetadatas([coin_type], walletKit);
 
       let userCoins = [];
-      let nextCursor = '';
-      let res;
+
+      let res = {};
       do {
         res = await provider.getAllCoins({
           owner: walletKit.currentAccount.address,
           coinType: coin_type,
-          nextCursor,
+          cursor: res.nextCursor,
         });
         userCoins = userCoins.concat(res.data);
-        nextCursor = res.nextCursor;
       } while (res.hasNextPage);
       const [mainCoin, ...otherCoins] = userCoins
         .filter((coin) => coin.coinType === coin_type)
@@ -70,7 +69,7 @@ export let moveCallCreateCoinRaffle = async ({
     }
 
     tx.moveCall({
-      target: `${RafflePackageId[network]}::raffle::create_raffle`,
+      target: `${RafflePackageId[network]}::raffle::create_coin_raffle`,
       typeArguments: [coin_type],
       arguments: [
         tx.pure(Array.from(new TextEncoder().encode(raffleName)), 'vector<u8>'),

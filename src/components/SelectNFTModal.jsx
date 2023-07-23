@@ -37,32 +37,26 @@ export default function SelectNFTModal({
         let provider = getSuiProvider(getNetwork(walletKit));
         // provider = new JsonRpcProvider();
         let ownObjects = [];
-        let nextCursor = undefined;
+        let res = {};
         do {
-          let res = await provider.getOwnedObjects({
+          res = await provider.getOwnedObjects({
             owner: address,
             options: {
               showContent: true,
               showType: true,
               showDisplay: true,
-              cursor: nextCursor,
             },
+            cursor: res.nextCursor,
           });
           ownObjects = ownObjects.concat(res.data);
-          if (res.hasNextPage) {
-            nextCursor = res.cursor;
-          } else {
-            nextCursor = undefined;
-          }
-          break;
-        } while (nextCursor);
+        } while (res.hasNextPage);
         let NFTs = ownObjects.filter((item) => {
           if (item.data.display.data) {
             return formatImageUrl(item.data.display.data.image_url);
           }
         });
         setOwnNFTs(NFTs);
-        // console.log('NFTs:', NFTs);
+        console.log('NFTs:', NFTs);
       }
     };
     run();
