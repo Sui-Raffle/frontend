@@ -58,6 +58,10 @@ export default function CreateCoinRaffle() {
           }
         });
         setUserCoinsList(Array.from(Object.values(coinSum)));
+        console.log(
+          'Array.from(Object.values(coinSum)):',
+          Array.from(Object.values(coinSum))
+        );
         await updateCoinMetadatas(Array.from(Object.keys(coinSum)), walletKit);
         setCoinMetadataReady(true);
 
@@ -257,7 +261,7 @@ export default function CreateCoinRaffle() {
                 data-dropdown-toggle='coinSelectDropdown'
                 className='inline-flex items-center px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
                 type='button'
-                disabled={currentRaffleObjId}
+                // disabled={currentRaffleObjId} // why I have this line?
               >
                 {CoinMetadatas[currentCoinInfo.coinType] &&
                   CoinMetadatas[currentCoinInfo.coinType].iconUrl && (

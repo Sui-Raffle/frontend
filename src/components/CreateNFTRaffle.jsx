@@ -101,8 +101,12 @@ export default function CreateCoinRaffle() {
             options: { showObjectChanges: true },
           });
           setTxRunning(false);
+          console.log('transactionBlock:', transactionBlock);
           let raffleObjId = transactionBlock.objectChanges.filter((obj) => {
-            return obj.type == 'created';
+            return (
+              obj.type == 'created' &&
+              obj.objectType.includes('::nft_raffle::NFT_Raffle')
+            );
           })[0].objectId;
           setCurrentRaffleObjId(raffleObjId);
         } catch (e) {
