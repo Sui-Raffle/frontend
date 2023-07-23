@@ -29,6 +29,10 @@ export let moveCallCreateNFTRaffle = async ({
     );
 
     let NFT_type = NFTs[0].data.type;
+    if (addresses.length < NFTs.length) {
+      alert("You don't have enough participants for the number of Prize NFTs.");
+      return '';
+    }
 
     tx.moveCall({
       target: `${RafflePackageId[network]}::nft_raffle::create_nft_raffle`,
