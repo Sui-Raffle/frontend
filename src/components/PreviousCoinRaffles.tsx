@@ -187,7 +187,9 @@ export function PreviousCoinRaffles() {
                   return <></>;
                 }
               };
-              let prizeField;
+              let prizeField = () => {
+                return <></>;
+              };
               let settleFunction = moveCallSettleCoinRaffle;
               if (raffle.type.includes('::Raffle')) {
                 prizeField = () => {
