@@ -10,6 +10,8 @@ import { getNetwork } from '../lib/getNetwork';
 import { updateCoinMetadatas } from '../lib/updateCoinMetadatas';
 import Button from '@/components/buttons/Button';
 import { ImSpinner2 } from 'react-icons/im';
+import { ConnectToWallet } from './ConnectToWallet';
+
 export function PreviousCoinRaffles() {
   const walletKit: any = useWalletKit();
   const [raffles, setRaffles] = React.useState([]);
@@ -353,7 +355,14 @@ export function PreviousCoinRaffles() {
       </div>
     );
   }
-  return <div>Loading</div>;
+  return (
+    <div className='mt-3 text-center'>
+      <h1>Connect Wallet to start using Bucket Raffle System.</h1>
+      <div className='mt-3'>
+        <ConnectToWallet></ConnectToWallet>
+      </div>
+    </div>
+  );
 }
 function parseTimestamp(timestamp: number) {
   const date = new Date(timestamp);
