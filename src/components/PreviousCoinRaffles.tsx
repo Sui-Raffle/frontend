@@ -142,9 +142,9 @@ export function PreviousCoinRaffles() {
   if (raffles.length) {
     return (
       <div className=''>
-        <table className='min-w-full divide-y divide-gray-200 text-left'>
+        <table className='divide-y divide-gray-200 text-left w-[90%] mx-auto'>
           <thead>
-            <tr>
+            <tr className=''>
               <th className='py-3 px-6 bg-gray-50 text-left text-xs font-medium text-gray-500  tracking-wider'>
                 #
               </th>

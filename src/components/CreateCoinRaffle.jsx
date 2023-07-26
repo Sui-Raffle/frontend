@@ -214,187 +214,188 @@ export default function CreateCoinRaffle() {
   };
 
   return (
-    <div className='mx-auto max-w-full bg-gray-800 p-6 shadow'>
-      <div className='flex'>
-        <div className='w-1/2'>
-          <div className='border-gray-light2 bg-white text-black relative my-2 flex items-center rounded-lg border px-2 py-1'>
-            <label className='w-full '>Raffle Name</label>
-            <input
-              type='text'
-              className='placeholder-gray-light2 block w-full rounded-lg border-transparent bg-transparent '
-              placeholder='Name of your Raffle'
-              value={raffleName}
-              onChange={handleRaffleNameChange}
-              disabled={currentRaffleObjId}
-            />
-          </div>
-          <div className='border-gray-light2 bg-white text-black relative my-2 flex items-center rounded-lg border px-2 py-1'>
-            <label className='w-full '>How Many Winners?</label>
-            <input
-              type='number'
-              className='placeholder-gray-light2 block w-full rounded-lg border-transparent bg-transparent '
-              placeholder='1'
-              value={winnerCount}
-              onChange={handleWinnerCountChange}
-              disabled={currentRaffleObjId}
-            />
-          </div>
-          <div className='border-gray-light2 bg-white text-black relative my-2 flex items-center rounded-lg border px-2 py-1'>
-            <label className='w-48'>Prize Amount</label>
-            <input
-              type='number'
-              className='placeholder-gray-light2 block w-full rounded-lg border-transparent bg-transparent p-2 pr-32 text-sm focus:outline-none lg:text-lg mx-3'
-              placeholder='0'
-              onChange={handlePrizeBalanceChange}
-              value={prizeBalance || ''}
-              disabled={currentRaffleObjId}
-            />
-            <div className='w-38 absolute inset-y-0 right-0 flex items-center rounded-lg'>
-              {/* <button
+    <div className='w-full bg-gray-800 py-6 shadow'>
+      <div className='flex flex-col w-[90%] mx-auto'>
+        <div className='flex mb-4'>
+          <div className='w-1/2'>
+            <div className='border-gray-light2 bg-white text-black relative my-2 flex items-center rounded-lg border px-2 py-1'>
+              <label className='w-full '>Raffle Name</label>
+              <input
+                type='text'
+                className='placeholder-gray-light2 block w-full rounded-lg border-transparent bg-transparent '
+                placeholder='Name of your Raffle'
+                value={raffleName}
+                onChange={handleRaffleNameChange}
+                disabled={currentRaffleObjId}
+              />
+            </div>
+            <div className='border-gray-light2 bg-white text-black relative my-2 flex items-center rounded-lg border px-2 py-1'>
+              <label className='w-full '>How Many Winners?</label>
+              <input
+                type='number'
+                className='placeholder-gray-light2 block w-full rounded-lg border-transparent bg-transparent '
+                placeholder='1'
+                value={winnerCount}
+                onChange={handleWinnerCountChange}
+                disabled={currentRaffleObjId}
+              />
+            </div>
+            <div className='border-gray-light2 bg-white text-black relative my-2 flex items-center rounded-lg border px-2 py-1'>
+              <label className='w-48'>Prize Amount</label>
+              <input
+                type='number'
+                className='placeholder-gray-light2 block w-full rounded-lg border-transparent bg-transparent p-2 pr-32 text-sm focus:outline-none lg:text-lg mx-3'
+                placeholder='0'
+                onChange={handlePrizeBalanceChange}
+                value={prizeBalance || ''}
+                disabled={currentRaffleObjId}
+              />
+              <div className='w-38 absolute inset-y-0 right-0 flex items-center rounded-lg'>
+                {/* <button
             className='bg-gray-light3 text-primary-default m-2 rounded-lg px-2 py-1'
             // style='visibility: visible;'
           >
             Max
           </button> */}
-              <button
-                id='coinSelectDropdownButton'
-                data-dropdown-toggle='coinSelectDropdown'
-                className='inline-flex items-center px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-                type='button'
-                // disabled={currentRaffleObjId} // why I have this line?
-              >
-                {CoinMetadatas[currentCoinInfo.coinType] &&
-                  CoinMetadatas[currentCoinInfo.coinType].iconUrl && (
-                    <img
-                      className='inline-block h-6 w-6 mx-1'
-                      src={CoinMetadatas[currentCoinInfo.coinType].iconUrl}
+                <button
+                  id='coinSelectDropdownButton'
+                  data-dropdown-toggle='coinSelectDropdown'
+                  className='inline-flex items-center px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+                  type='button'
+                  // disabled={currentRaffleObjId} // why I have this line?
+                >
+                  {CoinMetadatas[currentCoinInfo.coinType] &&
+                    CoinMetadatas[currentCoinInfo.coinType].iconUrl && (
+                      <img
+                        className='inline-block h-6 w-6 mx-1'
+                        src={CoinMetadatas[currentCoinInfo.coinType].iconUrl}
+                      />
+                    )}
+                  {currentCoinInfo.name || currentCoinInfo.symbol}
+                  <svg
+                    className='ml-2.5 h-2.5 w-2.5'
+                    aria-hidden='true'
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 10 6'
+                  >
+                    <path
+                      stroke='currentColor'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth='2'
+                      d='m1 1 4 4 4-4'
                     />
-                  )}
-                {currentCoinInfo.name || currentCoinInfo.symbol}
-                <svg
-                  className='ml-2.5 h-2.5 w-2.5'
-                  aria-hidden='true'
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 10 6'
+                  </svg>
+                </button>
+                <div
+                  id='coinSelectDropdown'
+                  className='z-10 hidden w-64 divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700'
                 >
-                  <path
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    d='m1 1 4 4 4-4'
-                  />
-                </svg>
-              </button>
-              <div
-                id='coinSelectDropdown'
-                className='z-10 hidden w-64 divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700'
-              >
-                <ul
-                  className='py-2 text-sm text-gray-700 dark:text-gray-200'
-                  aria-labelledby='coinSelectDropdownButton'
-                >
-                  {userCoinsList.map((coin, index) => {
-                    if (coinMetadataReady && CoinMetadatas[coin.type]) {
-                      let icon = () => {
-                        if (CoinMetadatas[coin.type].iconUrl) {
-                          return (
-                            <img
-                              className='inline-block h-6 w-6 mx-1'
-                              src={CoinMetadatas[coin.type].iconUrl}
-                            />
-                          );
-                        } else {
-                          return <></>;
-                        }
-                      };
-                      let handleOnClick = () => {
-                        setCurrentCoinInfo({
-                          coinType: coin.type,
-                          ...CoinMetadatas[coin.type],
-                        });
-                        document
-                          .getElementById('coinSelectDropdownButton')
-                          .click();
-                      };
-                      return (
-                        <li key={`${index}`}>
-                          <button
-                            className='block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
-                            onClick={handleOnClick}
-                          >
-                            {icon()}
-                            {(
-                              coin.balance /
-                              10 ** CoinMetadatas[coin.type].decimals
-                            ).toFixed(2)}{' '}
-                            {CoinMetadatas[coin.type].name ||
-                              CoinMetadatas[coin.type].symbol}{' '}
-                          </button>
-                        </li>
-                      );
-                    } else {
-                      return <li key={`${index}`}></li>;
-                    }
-                  })}
-                </ul>
+                  <ul
+                    className='py-2 text-sm text-gray-700 dark:text-gray-200'
+                    aria-labelledby='coinSelectDropdownButton'
+                  >
+                    {userCoinsList.map((coin, index) => {
+                      if (coinMetadataReady && CoinMetadatas[coin.type]) {
+                        let icon = () => {
+                          if (CoinMetadatas[coin.type].iconUrl) {
+                            return (
+                              <img
+                                className='inline-block h-6 w-6 mx-1'
+                                src={CoinMetadatas[coin.type].iconUrl}
+                              />
+                            );
+                          } else {
+                            return <></>;
+                          }
+                        };
+                        let handleOnClick = () => {
+                          setCurrentCoinInfo({
+                            coinType: coin.type,
+                            ...CoinMetadatas[coin.type],
+                          });
+                          document
+                            .getElementById('coinSelectDropdownButton')
+                            .click();
+                        };
+                        return (
+                          <li key={`${index}`}>
+                            <button
+                              className='block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
+                              onClick={handleOnClick}
+                            >
+                              {icon()}
+                              {(
+                                coin.balance /
+                                10 ** CoinMetadatas[coin.type].decimals
+                              ).toFixed(2)}{' '}
+                              {CoinMetadatas[coin.type].name ||
+                                CoinMetadatas[coin.type].symbol}{' '}
+                            </button>
+                          </li>
+                        );
+                      } else {
+                        return <li key={`${index}`}></li>;
+                      }
+                    })}
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className='w-1/2'>
-          <div className='ml-2 my-2 h-full'>
-            <p className='text-white'>Participant Addresses</p>
-            <textarea
-              className='w-full h-3/4 rounded p-2 overflow-x-auto text-sm'
-              value={addresses}
-              onChange={handleAddressesChange}
-            ></textarea>
+          <div className='w-1/2'>
+            <div className='ml-2 my-2 h-full'>
+              <p className='text-white'>Participant Addresses</p>
+              <textarea
+                className='w-full h-3/4 rounded p-2 overflow-x-auto text-sm'
+                value={addresses}
+                onChange={handleAddressesChange}
+              ></textarea>
+            </div>
           </div>
         </div>
-      </div>
-      <div>{}</div>
-      {(txRunning && (
-        <div className='w-full text-center'>
-          <RingAnimation></RingAnimation>
-        </div>
-      )) ||
-        (currentRaffleFields.winners && currentRaffleFields.winners.length && (
-          <div>
-            <div className='w-full rounded bg-white px-4 py-2 text-center mb-3'>
-              <p>🎊 Winners 🎊</p>
-              {currentRaffleFields.winners.map((address, index) => (
-                <p key={index}>{address}</p>
-              ))}
-            </div>
-            <button
-              className='w-full bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
-              onClick={() => {
-                window.location.reload();
-              }}
-            >
-              Create Another Raffle
-            </button>
+        {(txRunning && (
+          <div className='w-[90%] mx-auto text-center'>
+            <RingAnimation></RingAnimation>
           </div>
         )) ||
-        (!currentRaffleObjId && (
-          <button
-            className='w-full bg-blue-500 hover:bg-blue-700 rounded-lg px-4 py-1 text-white'
-            onClick={handleStartRaffle}
-            disabled={!winnerCount || !addresses}
-          >
-            Start Raffle {getNetworkIgnoreError(walletKit, 'on ')}
-          </button>
-        )) || (
-          <button
-            className='w-full bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
-            onClick={handleSettleRaffle}
-          >
-            Settle Raffle {getNetworkIgnoreError(walletKit, 'on ')}
-          </button>
-        )}
-      {}
+          (currentRaffleFields.winners &&
+            currentRaffleFields.winners.length && (
+              <div>
+                <div className='w-full rounded bg-white px-4 py-2 text-center mb-3'>
+                  <p>🎊 Winners 🎊</p>
+                  {currentRaffleFields.winners.map((address, index) => (
+                    <p key={index}>{address}</p>
+                  ))}
+                </div>
+                <button
+                  className='w-full bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
+                  onClick={() => {
+                    window.location.reload();
+                  }}
+                >
+                  Create Another Raffle
+                </button>
+              </div>
+            )) ||
+          (!currentRaffleObjId && (
+            <button
+              className='w-full bg-blue-500 hover:bg-blue-700 rounded-lg px-4 py-1 text-white'
+              onClick={handleStartRaffle}
+              disabled={!winnerCount || !addresses}
+            >
+              Start Raffle {getNetworkIgnoreError(walletKit, 'on ')}
+            </button>
+          )) || (
+            <button
+              className='w-full bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
+              onClick={handleSettleRaffle}
+            >
+              Settle Raffle {getNetworkIgnoreError(walletKit, 'on ')}
+            </button>
+          )}
+      </div>
     </div>
   );
 }

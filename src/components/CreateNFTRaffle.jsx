@@ -197,107 +197,109 @@ export default function CreateCoinRaffle() {
   };
 
   return (
-    <div className='mx-auto max-w-full bg-gray-800 p-6 shadow'>
-      <div className='flex'>
-        <div className='w-1/2'>
-          <div className='border-gray-light2 bg-white text-black relative my-2 flex items-center rounded-lg border px-2 py-1'>
-            <label className='w-full '>Raffle Name</label>
-            <input
-              type='text'
-              className='placeholder-gray-light2 block w-full rounded-lg border-transparent bg-transparent '
-              placeholder='Name of your Raffle'
-              value={raffleName}
-              onChange={handleRaffleNameChange}
-              disabled={currentRaffleObjId}
-            />
-          </div>
+    <div className='mx-auto w-full bg-gray-800 py-6 shadow'>
+      <div className='flex flex-col  w-[90%] mx-auto'>
+        <div className='flex mb-4'>
+          <div className='w-1/2'>
+            <div className='border-gray-light2 bg-white text-black relative my-2 flex items-center rounded-lg border px-2 py-1'>
+              <label className='w-full '>Raffle Name</label>
+              <input
+                type='text'
+                className='placeholder-gray-light2 block w-full rounded-lg border-transparent bg-transparent '
+                placeholder='Name of your Raffle'
+                value={raffleName}
+                onChange={handleRaffleNameChange}
+                disabled={currentRaffleObjId}
+              />
+            </div>
 
-          <div className='border-gray-light2 bg-white text-black relative my-2  items-center rounded-lg border px-2 py-1'>
-            <p className='text-center w-full'>
-              Prize NFTs ({prizeNFTs.length})
-            </p>
-            <div
-              className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-2'
-              style={{ '-ms-overflow-style': 'none' }}
-            >
-              {prizeNFTs.map((item, index) => {
-                return (
-                  <div
-                    key={index}
-                    className={`max-w-sm bg-white border border-gray-200 
+            <div className='border-gray-light2 bg-white text-black relative my-2  items-center rounded-lg border px-2 py-1'>
+              <p className='text-center w-full'>
+                Prize NFTs ({prizeNFTs.length})
+              </p>
+              <div
+                className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-2'
+                style={{ '-ms-overflow-style': 'none' }}
+              >
+                {prizeNFTs.map((item, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className={`max-w-sm bg-white border border-gray-200 
                       rounded-lg shadow dark:bg-gray-800 dark:border-gray-700
                       
                       `}
-                  >
-                    <img
-                      class='w-full'
-                      src={formatImageUrl(item.data.display.data.image_url)}
-                      alt=''
-                    />
-                    <div class='p-5'>
-                      <p class='mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'>
-                        {item.data.display.data.name}
-                      </p>
+                    >
+                      <img
+                        class='w-full'
+                        src={formatImageUrl(item.data.display.data.image_url)}
+                        alt=''
+                      />
+                      <div class='p-5'>
+                        <p class='mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'>
+                          {item.data.display.data.name}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
+              {renderNftSelectorModel(walletKit, handleNftSelectorOnConfirm)}
             </div>
-            {renderNftSelectorModel(walletKit, handleNftSelectorOnConfirm)}
+          </div>
+          <div className='w-1/2'>
+            <div className='ml-2 my-2 h-full'>
+              <p className='text-white'>Participant Addresses</p>
+              <textarea
+                className='w-full h-3/4 rounded p-2 overflow-x-auto text-xs'
+                value={addresses}
+                onChange={handleAddressesChange}
+              ></textarea>
+            </div>
           </div>
         </div>
-        <div className='w-1/2'>
-          <div className='ml-2 my-2 h-full'>
-            <p className='text-white'>Participant Addresses</p>
-            <textarea
-              className='w-full h-3/4 rounded p-2 overflow-x-auto text-xs'
-              value={addresses}
-              onChange={handleAddressesChange}
-            ></textarea>
-          </div>
-        </div>
-      </div>
-      <div>{}</div>
-      {(txRunning && (
-        <div className='w-full text-center'>
-          <RingAnimation></RingAnimation>
-        </div>
-      )) ||
-        (currentRaffleFields.winners && currentRaffleFields.winners.length && (
-          <div>
-            <div className='w-full rounded bg-white px-4 py-2 text-center mb-3'>
-              <p>🎊 Winners 🎊</p>
-              {currentRaffleFields.winners.map((address, index) => (
-                <p key={index}>{address}</p>
-              ))}
-            </div>
-            <button
-              className='w-full bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
-              onClick={() => {
-                window.location.reload();
-              }}
-            >
-              Create Another Raffle
-            </button>
+        <div>{}</div>
+        {(txRunning && (
+          <div className='w-full text-center'>
+            <RingAnimation></RingAnimation>
           </div>
         )) ||
-        (!currentRaffleObjId && (
-          <button
-            className='w-full bg-blue-500 hover:bg-blue-700 rounded-lg px-4 py-1 text-white'
-            onClick={handleStartRaffle}
-            disabled={!addresses}
-          >
-            Start Raffle {getNetworkIgnoreError(walletKit, 'on ')}
-          </button>
-        )) || (
-          <button
-            className='w-full bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
-            onClick={handleSettleRaffle}
-          >
-            Settle Raffle {getNetworkIgnoreError(walletKit, 'on ')}
-          </button>
-        )}
-      {}
+          (currentRaffleFields.winners &&
+            currentRaffleFields.winners.length && (
+              <div>
+                <div className='w-full rounded bg-white px-4 py-2 text-center mb-3'>
+                  <p>🎊 Winners 🎊</p>
+                  {currentRaffleFields.winners.map((address, index) => (
+                    <p key={index}>{address}</p>
+                  ))}
+                </div>
+                <button
+                  className='w-full bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
+                  onClick={() => {
+                    window.location.reload();
+                  }}
+                >
+                  Create Another Raffle
+                </button>
+              </div>
+            )) ||
+          (!currentRaffleObjId && (
+            <button
+              className='w-full bg-blue-500 hover:bg-blue-700 rounded-lg px-4 py-1 text-white'
+              onClick={handleStartRaffle}
+              disabled={!addresses}
+            >
+              Start Raffle {getNetworkIgnoreError(walletKit, 'on ')}
+            </button>
+          )) || (
+            <button
+              className='w-full bg-green-500 hover:bg-green-700 rounded-lg px-4 py-1 text-white'
+              onClick={handleSettleRaffle}
+            >
+              Settle Raffle {getNetworkIgnoreError(walletKit, 'on ')}
+            </button>
+          )}
+      </div>
     </div>
   );
 }

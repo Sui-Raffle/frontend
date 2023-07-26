@@ -6,7 +6,7 @@ export default function Navbar() {
   // TODO: ray: 想請你弄個 Bucket Raffle System 的 Logo
   return (
     <nav className='bg-black'>
-      <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
+      <div className='mx-auto w-[90%]'>
         <div className='flex h-16 items-center justify-between'>
           <div className='flex items-center'>
             <div className='flex-shrink-0'>
@@ -65,7 +65,7 @@ export default function Navbar() {
             </div>
           </div>
           <div className='md:block'>
-            <div className='ml-4 flex items-center md:ml-6'>
+            <div className='flex items-center md:ml-6'>
               <ConnectToWallet></ConnectToWallet>
             </div>
           </div>
