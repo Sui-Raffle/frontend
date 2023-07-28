@@ -4,7 +4,7 @@ import getSuiProvider from '../lib/getSuiProvider';
 import { moveCallCreateCoinRaffle } from '../lib/moveCallCreateCoinRaffle';
 import { moveCallSettleCoinRaffle } from '../lib/moveCallSettleCoinRaffle';
 import { getRaffleFields } from '../lib/getRaffleFields';
-import { CoinMetadatas } from '../lib/config';
+import { CoinMetadatas, DefaultAddresses } from '../lib/config';
 import { updateCoinMetadatas } from '@/lib/updateCoinMetadatas';
 import RingAnimation from './RingAnimation';
 import { sleep } from '../lib/sleep.jsx';
@@ -153,9 +153,7 @@ export default function CreateCoinRaffle() {
     setWinnerCount(event.target.value);
   };
   // addresses Handeler
-  const [addresses, setAddresses] = useState(
-    '0x3d1037246147d652b463ff8815acaf034091d21bf2cfa996fab41d36c96ba099\n0x04d626ce8938318165fab01491095329aee67fd017a4a17fe2c981b8a9a569cc\n0x388a0e160cb67dbac3a182f1fadd31612a78fc271916db4b2f7d99d2c9ca2c72'
-  );
+  const [addresses, setAddresses] = useState(DefaultAddresses);
   const handleAddressesChange = (event) => {
     setAddresses(event.target.value);
   };
@@ -346,7 +344,9 @@ export default function CreateCoinRaffle() {
           </div>
           <div className='w-1/2'>
             <div className='ml-2 my-2 h-full'>
-              <p className='text-white'>Participant Addresses</p>
+              <p className='text-white'>
+                Participants' Addresses ({addresses.split('\n').length})
+              </p>
               <textarea
                 className='w-full h-3/4 rounded p-2 overflow-x-auto text-sm'
                 value={addresses}
