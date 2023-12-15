@@ -10,14 +10,14 @@ export default function Navbar() {
         <div className='flex h-16 items-center justify-between'>
           <div className='flex items-center'>
             <div className='flex-shrink-0'>
-              <NextImage
+              {/* <NextImage
                 useSkeleton
                 className='w-32 md:w-40'
                 src='/images/bucket_logo_with_text.png'
                 width='180'
                 height='180'
                 alt='Icon'
-              />
+              /> */}
             </div>
             <div className='hidden md:block'>
               <div className='ml-10 flex items-baseline space-x-4'>
