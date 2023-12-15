@@ -48,13 +48,15 @@ export default function CreateCoinRaffle() {
         } while (res.hasNextPage);
         let coinSum = {};
         userCoins.forEach((coin) => {
-          if (coinSum[coin.coinType]) {
-            coinSum[coin.coinType].balance += Number(coin.balance);
-          } else {
-            coinSum[coin.coinType] = {
-              type: coin.coinType,
-              balance: Number(coin.balance),
-            };
+          if (coin.balance > 0) {
+            if (coinSum[coin.coinType]) {
+              coinSum[coin.coinType].balance += Number(coin.balance);
+            } else {
+              coinSum[coin.coinType] = {
+                type: coin.coinType,
+                balance: Number(coin.balance),
+              };
+            }
           }
         });
         setUserCoinsList(Array.from(Object.values(coinSum)));
