@@ -3,7 +3,7 @@ import { ConnectToWallet } from './ConnectToWallet';
 import NextImage from '@/components/NextImage';
 export default function Navbar() {
   // TODO: ray: Navbar 在手機版的支援度還有排版，想請你協助
-  // TODO: ray: 想請你弄個 Bucket Raffle System 的 Logo
+  // TODO: ray: 想請你弄個 Sui Raffle 的 Logo
   return (
     <nav className='bg-black'>
       <div className='mx-auto w-[90%]'>

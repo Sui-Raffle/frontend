@@ -38,7 +38,7 @@ export default function HomePage() {
           </section>
           {/* <section>
             <div className='mt-3 width-full text-center'>
-              <h1>Welcome to Bucket Raffle System</h1>
+              <h1>Welcome to Sui Raffle</h1>
               <hr className='my-4'></hr>
               <Link
                 href={`/coinRaffle`}

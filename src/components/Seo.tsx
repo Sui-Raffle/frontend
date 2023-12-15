@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 
 // !STARTERCONF Change these default meta
 const defaultMeta = {
-  title: 'Bucket Raffle System',
-  siteName: 'Bucket Raffle System',
+  title: 'Sui Raffle',
+  siteName: 'Sui Raffle',
   description: 'Raffle on Sui Network.',
   /** Without additional '/' on the end, e.g. https://theodorusclarence.com */
   url: 'https://raffle.bucketprotocol.io',
