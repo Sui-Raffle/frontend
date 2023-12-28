@@ -6,14 +6,12 @@ dotenv.config();
 let getSuiProvider = (network = 'mainnet') => {
   if (network == 'mainnet') {
     let connection = new Connection({
-      fullnode:
-        'https://sui-mainnet.blockvision.org/v1/2SjMglFHZy5G6RUaIEm4aLLtHGP',
+      fullnode: 'https://fullnode.mainnet.sui.io:443',
     });
     return new JsonRpcProvider(connection);
   } else if (network == 'testnet') {
     let connection = new Connection({
-      fullnode:
-        'https://sui-testnet.blockvision.org/v1/2SnBwJqW1RLEao9yzPo8oB7fKhi',
+      fullnode: 'https://fullnode.testnet.sui.io:443',
     });
     return new JsonRpcProvider(connection);
   } else if (network == 'devnet') {
