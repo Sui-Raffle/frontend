@@ -224,7 +224,7 @@ export function PreviousCoinRaffles() {
                             return (
                               <a
                                 key={index}
-                                href={`https://suiexplorer.com/object/${id}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`}
+                                href={`https://suivision.xyz/object/${id}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`}
                                 target='_blank'
                               >
                                 <img
@@ -266,7 +266,7 @@ export function PreviousCoinRaffles() {
                 let network =
                   walletKit.currentAccount.chains[0].split('sui:')[1];
                 window.open(
-                  `https://suiexplorer.com/object/${raffle.id.id}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`,
+                  `https://suivision.xyz/object/${raffle.id.id}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`,
                   '_blank'
                 );
               };
@@ -307,7 +307,7 @@ export function PreviousCoinRaffles() {
                 let network = getNetwork(walletKit);
                 return (
                   <a
-                    href={`https://suiexplorer.com/address/${raffle.creator}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`}
+                    href={`https://suivision.xyz/address/${raffle.creator}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`}
                     target='_blank'
                     className='text-blue-500 hover:text-blue-800'
                   >
